@@ -33,10 +33,30 @@ namespace OmokProgram
                 if (txt == txtIP) txt.Text = IPPlaceholder;
                 else if (txt == txtPort) txt.Text = portPlaceholder;
 
-                //txt.GotFocus += RemovePlaceholder;
-                //txt.LostFocus += SetPlaceholder;
+                txt.GotFocus += RemovePlaceholder;
+                txt.LostFocus += SetPlaceholder;
             }
         }
+        private void RemovePlaceholder(object sender, EventArgs e)
+        {
+            TextBox txt = (TextBox)sender;
+            if (txt.Text == IPPlaceholder || txt.Text == portPlaceholder)
+            {
+                txt.ForeColor = Color.Black;
+                txt.Text = string.Empty;
+            }
+        }
+        private void SetPlaceholder(object sender, EventArgs e)
+        {
+            TextBox txt = (TextBox)sender;
+            if (string.IsNullOrWhiteSpace(txt.Text))
+            {
+                txt.ForeColor = Color.DarkGray; //Placeholder 흐린 글씨
+                if (txt == txtIP) txt.Text = IPPlaceholder;
+                else if (txt == txtPort) txt.Text = portPlaceholder;
+            }
+        }
+
         private void pnBackToHome_Click(object sender, EventArgs e)
         {
             closeProgram = false;
