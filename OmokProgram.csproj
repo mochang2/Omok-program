@@ -52,6 +52,12 @@
     <Compile Include="mainForm.Designer.cs">
       <DependentUpon>mainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MultiPlayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MultiPlayForm.Designer.cs">
+      <DependentUpon>MultiPlayForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MultiPlayOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +76,12 @@
     <Compile Include="pnBg.Designer.cs">
       <DependentUpon>pnBg.cs</DependentUpon>
     </Compile>
+    <Compile Include="pnBoard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="pnBoard.Designer.cs">
+      <DependentUpon>pnBoard.cs</DependentUpon>
+    </Compile>
     <Compile Include="pnInLeft.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -84,6 +96,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SinglePlayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SinglePlayForm.Designer.cs">
+      <DependentUpon>SinglePlayForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SInglePlayOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +111,9 @@
     <EmbeddedResource Include="mainForm.resx">
       <DependentUpon>mainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MultiPlayForm.resx">
+      <DependentUpon>MultiPlayForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MultiPlayOptionForm.resx">
       <DependentUpon>MultiPlayOptionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -101,6 +122,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="pnBg.resx">
       <DependentUpon>pnBg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pnBoard.resx">
+      <DependentUpon>pnBoard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="pnInLeft.resx">
       <DependentUpon>pnInLeft.cs</DependentUpon>
@@ -112,6 +136,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SinglePlayForm.resx">
+      <DependentUpon>SinglePlayForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SInglePlayOptionForm.resx">
       <DependentUpon>SInglePlayOptionForm.cs</DependentUpon>
@@ -142,6 +169,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\homeIcon.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\오목판blank.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\selectedSign.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\hourGlass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\stoneBlack.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\stoneWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

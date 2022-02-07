@@ -13,7 +13,9 @@ namespace OmokProgram
     public partial class mainForm : Form
     {
         private SinglePlayOptionForm singlePlayOptionForm;
+        private SinglePlayForm singlePlayForm;
         private MultiPlayOptionForm multiPlayOptionForm;
+        private MultiPlayForm multiPlayForm;
 
         public mainForm()
         {
@@ -25,15 +27,23 @@ namespace OmokProgram
             switch ((sender as Button).Name)
             {
                 case "btnSinglePlay":
+                    singlePlayForm = new SinglePlayForm();
+                    singlePlayForm.mainFormNormal += mainFormSizeNormal;
+                    singlePlayForm.Location = new Point(this.Location.X, this.Location.Y);
                     singlePlayOptionForm = new SinglePlayOptionForm();
-                    singlePlayOptionForm.mainFormMaximize += mainFormSizeNormal;
+                    singlePlayOptionForm.mainFormNormal += mainFormSizeNormal;
                     singlePlayOptionForm.Location = new Point(this.Location.X, this.Location.Y);
+                    singlePlayOptionForm.singlePlayForm = this.singlePlayForm;
                     singlePlayOptionForm.Show();
                     break;
                 case "btnMultiPlay":
+                    multiPlayForm = new MultiPlayForm();
+                    multiPlayForm.mainFormNormal += mainFormSizeNormal;
+                    multiPlayForm.Location = new Point(this.Location.X, this.Location.Y);
                     multiPlayOptionForm = new MultiPlayOptionForm();
-                    multiPlayOptionForm.mainFormMaximize += mainFormSizeNormal;
+                    multiPlayOptionForm.mainFormNormal += mainFormSizeNormal;
                     multiPlayOptionForm.Location = new Point(this.Location.X, this.Location.Y);
+                    multiPlayOptionForm.multiPlayForm = this.multiPlayForm;
                     multiPlayOptionForm.Show();
                     break;
                 default:

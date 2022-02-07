@@ -126,6 +126,7 @@ namespace OmokProgram
             this.btnGameStart.TabIndex = 7;
             this.btnGameStart.Text = "시작하기";
             this.btnGameStart.UseVisualStyleBackColor = false;
+            this.btnGameStart.Click += new System.EventHandler(this.btnGameStart_Click);
             // 
             // txtPort
             // 

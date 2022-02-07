@@ -38,6 +38,12 @@ namespace OmokProgram
             this.pnInRight = new OmokProgram.pnInRight();
             this.pnInLeft = new OmokProgram.pnInLeft();
             this.pnBg = new OmokProgram.pnBg();
+            this.rbBlack = new System.Windows.Forms.RadioButton();
+            this.rbWhite = new System.Windows.Forms.RadioButton();
+            this.pnRule = new System.Windows.Forms.Panel();
+            this.pnColor = new System.Windows.Forms.Panel();
+            this.pnRule.SuspendLayout();
+            this.pnColor.SuspendLayout();
             this.SuspendLayout();
             // 
             // cbAILevel
@@ -55,8 +61,9 @@ namespace OmokProgram
             // rbRenjuRule
             // 
             this.rbRenjuRule.AutoSize = true;
+            this.rbRenjuRule.Checked = true;
             this.rbRenjuRule.Font = new System.Drawing.Font("나눔고딕", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.rbRenjuRule.Location = new System.Drawing.Point(610, 265);
+            this.rbRenjuRule.Location = new System.Drawing.Point(104, 0);
             this.rbRenjuRule.Name = "rbRenjuRule";
             this.rbRenjuRule.Padding = new System.Windows.Forms.Padding(5);
             this.rbRenjuRule.Size = new System.Drawing.Size(88, 34);
@@ -70,7 +77,7 @@ namespace OmokProgram
             this.rbOpeningRule.AutoSize = true;
             this.rbOpeningRule.Enabled = false;
             this.rbOpeningRule.Font = new System.Drawing.Font("나눔고딕", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.rbOpeningRule.Location = new System.Drawing.Point(506, 265);
+            this.rbOpeningRule.Location = new System.Drawing.Point(0, 0);
             this.rbOpeningRule.Name = "rbOpeningRule";
             this.rbOpeningRule.Padding = new System.Windows.Forms.Padding(5);
             this.rbOpeningRule.Size = new System.Drawing.Size(104, 34);
@@ -87,13 +94,14 @@ namespace OmokProgram
             this.btnGameStart.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnGameStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGameStart.Font = new System.Drawing.Font("휴먼둥근헤드라인", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnGameStart.Location = new System.Drawing.Point(532, 343);
+            this.btnGameStart.Location = new System.Drawing.Point(532, 398);
             this.btnGameStart.Margin = new System.Windows.Forms.Padding(0);
             this.btnGameStart.Name = "btnGameStart";
             this.btnGameStart.Size = new System.Drawing.Size(140, 52);
             this.btnGameStart.TabIndex = 7;
             this.btnGameStart.Text = "시작하기";
             this.btnGameStart.UseVisualStyleBackColor = false;
+            this.btnGameStart.Click += new System.EventHandler(this.btnGameStart_Click);
             // 
             // pnBackToHome
             // 
@@ -133,16 +141,59 @@ namespace OmokProgram
             this.pnBg.Name = "pnBg";
             this.pnBg.Size = new System.Drawing.Size(724, 560);
             this.pnBg.TabIndex = 0;
-            this.pnBg.Load += new System.EventHandler(this.pnBg1_Load);
+            this.pnBg.Load += new System.EventHandler(this.pnBg_Load);
+            // 
+            // rbBlack
+            // 
+            this.rbBlack.AutoSize = true;
+            this.rbBlack.Checked = true;
+            this.rbBlack.Font = new System.Drawing.Font("나눔고딕", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.rbBlack.Location = new System.Drawing.Point(3, 0);
+            this.rbBlack.Name = "rbBlack";
+            this.rbBlack.Size = new System.Drawing.Size(46, 24);
+            this.rbBlack.TabIndex = 8;
+            this.rbBlack.TabStop = true;
+            this.rbBlack.Text = "흑";
+            this.rbBlack.UseVisualStyleBackColor = true;
+            // 
+            // rbWhite
+            // 
+            this.rbWhite.AutoSize = true;
+            this.rbWhite.Font = new System.Drawing.Font("나눔고딕", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.rbWhite.Location = new System.Drawing.Point(52, 0);
+            this.rbWhite.Name = "rbWhite";
+            this.rbWhite.Size = new System.Drawing.Size(46, 24);
+            this.rbWhite.TabIndex = 9;
+            this.rbWhite.TabStop = true;
+            this.rbWhite.Text = "백";
+            this.rbWhite.UseVisualStyleBackColor = true;
+            // 
+            // pnRule
+            // 
+            this.pnRule.Controls.Add(this.rbRenjuRule);
+            this.pnRule.Controls.Add(this.rbOpeningRule);
+            this.pnRule.Location = new System.Drawing.Point(502, 265);
+            this.pnRule.Name = "pnRule";
+            this.pnRule.Size = new System.Drawing.Size(190, 34);
+            this.pnRule.TabIndex = 10;
+            // 
+            // pnColor
+            // 
+            this.pnColor.Controls.Add(this.rbBlack);
+            this.pnColor.Controls.Add(this.rbWhite);
+            this.pnColor.Location = new System.Drawing.Point(546, 328);
+            this.pnColor.Name = "pnColor";
+            this.pnColor.Size = new System.Drawing.Size(103, 24);
+            this.pnColor.TabIndex = 11;
             // 
             // SinglePlayOptionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 560);
+            this.Controls.Add(this.pnColor);
+            this.Controls.Add(this.pnRule);
             this.Controls.Add(this.btnGameStart);
-            this.Controls.Add(this.rbOpeningRule);
-            this.Controls.Add(this.rbRenjuRule);
             this.Controls.Add(this.cbAILevel);
             this.Controls.Add(this.pnBackToHome);
             this.Controls.Add(this.pnInRight);
@@ -150,8 +201,11 @@ namespace OmokProgram
             this.Controls.Add(this.pnBg);
             this.Name = "SinglePlayOptionForm";
             this.Text = "오목대전(싱글)";
+            this.pnRule.ResumeLayout(false);
+            this.pnRule.PerformLayout();
+            this.pnColor.ResumeLayout(false);
+            this.pnColor.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -165,5 +219,9 @@ namespace OmokProgram
         private System.Windows.Forms.RadioButton rbRenjuRule;
         private System.Windows.Forms.RadioButton rbOpeningRule;
         private System.Windows.Forms.Button btnGameStart;
+        private System.Windows.Forms.RadioButton rbBlack;
+        private System.Windows.Forms.RadioButton rbWhite;
+        private System.Windows.Forms.Panel pnRule;
+        private System.Windows.Forms.Panel pnColor;
     }
 }

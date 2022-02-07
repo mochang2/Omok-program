@@ -13,8 +13,9 @@ namespace OmokProgram
     public partial class MultiPlayOptionForm : Form
     {
         public delegate void mainFormMaximizeHandler(object sender, EventArgs e);
-        public event mainFormMaximizeHandler mainFormMaximize;
+        public event mainFormMaximizeHandler mainFormNormal;
         private bool closeProgram;
+        public MultiPlayForm multiPlayForm;
 
         private TextBox[] txtList;
         private const string IPPlaceholder = "IP";
@@ -61,13 +62,19 @@ namespace OmokProgram
         {
             closeProgram = false;
             Close();
-            mainFormMaximize(sender, e);
+            mainFormNormal(sender, e);
+        }
+        private void btnGameStart_Click(object sender, EventArgs e)
+        {
+            // ip, port 조건 필요
+            closeProgram = false;
+            Close();
+            multiPlayForm.Show();
         }
 
         private void closing(object sender, EventArgs e)
         {
             if (closeProgram) Application.Exit();
         }
-
     }
 }
