@@ -39,7 +39,7 @@ namespace OmokProgram
             this.pnSelectedSign.BackgroundImage = global::OmokProgram.Properties.Resources.selectedSign;
             this.pnSelectedSign.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pnSelectedSign.Location = new System.Drawing.Point(414, 6);
-            this.pnSelectedSign.Margin = new System.Windows.Forms.Padding(6);
+            this.pnSelectedSign.Margin = new System.Windows.Forms.Padding(0);
             this.pnSelectedSign.Name = "pnSelectedSign";
             this.pnSelectedSign.Size = new System.Drawing.Size(16, 16);
             this.pnSelectedSign.TabIndex = 1;
@@ -72,6 +72,6 @@ namespace OmokProgram
         #endregion
 
         public System.Windows.Forms.Panel pnSelectedSign;
-        private System.Windows.Forms.Panel pnGameBoard;
+        public System.Windows.Forms.Panel pnGameBoard;
     }
 }

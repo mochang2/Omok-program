@@ -5,8 +5,10 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace OmokProgram
 {
@@ -14,6 +16,16 @@ namespace OmokProgram
         none = 0,
         black,
         white
+    }
+    public struct SEQUENCE_DATA
+    {
+        public Rectangle rectangle;
+        public Brush brush;
+        public SEQUENCE_DATA(Rectangle r, Brush b)
+        {
+            rectangle = r;
+            brush = b;
+        }
     }
     public partial class pnBoard : UserControl
     {
@@ -24,6 +36,7 @@ namespace OmokProgram
         public int stoneSize = 22;
         public int flowerSize = 8;
         public int selectSize = 16;
+        public bool formMinimized = false;
 
         // game
         public int[] axis = new int[2] { -1, -1 }; // [0]: X, [1]: Y
@@ -31,12 +44,16 @@ namespace OmokProgram
         public Graphics g;
         public Pen pen;
         public Brush wBrush, bBrush, rBrush;
+        public Font seqFont = new Font("맑은 고딕", 9);
+        public int stoneCnt = 0;
+        public List<SEQUENCE_DATA> gameSeq = new List<SEQUENCE_DATA>();
+
 
         // initialize
         public pnBoard()
         {
             InitializeComponent();
-
+            
             pen = new Pen(Color.Black);
             bBrush = new SolidBrush(Color.Black);
             wBrush = new SolidBrush(Color.White);
@@ -45,10 +62,19 @@ namespace OmokProgram
         private void pnGameBoard_Paint(object sender, PaintEventArgs e)
         {
             g = pnGameBoard.CreateGraphics();
-
+            drawBoard();
+            if (formMinimized)
+            {
+                drawStone(); 
+                formMinimized = false;
+            }
+            // sequence 저장 List 사용
+        }
+        private void drawBoard()
+        {
             for (int i = 0; i < lineCnt; i++) // 세로선
             {
-                g.DrawLine(pen, 
+                g.DrawLine(pen,
                   new Point(margin + i * gridSize, margin),
                   new Point(margin + i * gridSize, margin + (lineCnt - 1) * gridSize));
             }
@@ -73,9 +99,44 @@ namespace OmokProgram
                 }
             }
         }
+        private void drawStone()
+        {
+            for (int x = 0; x < lineCnt; x++)
+            {
+                for (int y = 0; y < lineCnt; y++)
+                {
+                    if (board[x, y] == STONE.black)
+                    {
+                        Bitmap bmp = new Bitmap("../../Properties/stoneBlack.png");
+                        g.DrawImage(bmp, 
+                            margin + x * gridSize - stoneSize / 2,
+                            margin + y * gridSize - stoneSize / 2,
+                            stoneSize, stoneSize);
+                    }
+                    else if (board[x, y] == STONE.white)
+                    {
+                        Bitmap bmp = new Bitmap("../../Properties/stoneWhite.png");
+                        g.DrawImage(bmp, 
+                            margin + x * gridSize - stoneSize / 2,
+                            margin + y * gridSize - stoneSize / 2,
+                            stoneSize, stoneSize);
+                    }
+                }
+            }
+
+            StringFormat seqStringFormat = new StringFormat();
+            seqStringFormat.Alignment = StringAlignment.Center;
+            seqStringFormat.LineAlignment = StringAlignment.Center;
+            for (int i = 0; i < gameSeq.Count; i++) 
+            {
+                g.DrawString((i + 1).ToString(), seqFont,
+                    gameSeq[i].brush, gameSeq[i].rectangle, seqStringFormat);
+            }
+        }
+
 
         // user interaction
-        private void pnGameBoard_MouseDown(object sender, MouseEventArgs e)
+        public void pnGameBoard_MouseDown(object sender, MouseEventArgs e)
         {
             axis[0] = (e.X - margin + gridSize / 2) / gridSize;
             axis[1] = (e.Y - margin + gridSize / 2) / gridSize;
@@ -86,9 +147,12 @@ namespace OmokProgram
                 return;
 
             // pn으로 박지 말고.. 그리자.
-            if (pnSelectedSign.Visible == false) pnSelectedSign.Visible = true;
-            pnSelectedSign.Location = new Point(margin + gridSize * axis[0] - selectSize / 2,
-                                                margin + gridSize * axis[1] - selectSize / 2);
+            if (pnSelectedSign.Enabled == true)
+            {
+                if (pnSelectedSign.Visible == false) pnSelectedSign.Visible = true;
+                pnSelectedSign.Location = new Point(margin + gridSize * axis[0] - selectSize / 2,
+                                                    margin + gridSize * axis[1] - selectSize / 2);
+            }
         }
 
         //private int[] GetRowColIndex(TableLayoutPanel tlp, Point point)
@@ -115,7 +179,6 @@ namespace OmokProgram
 
         //    return new int[] { col, row };
         //}
-
 
     }
 }

@@ -19,16 +19,17 @@ namespace OmokProgram
         private bool closeProgram;
 
         // game
-        private Graphics g;
         public string playerColor = "";
+        private Graphics g;
         private string turn = "black";
         private bool playing = false;
+        private SharedData sharedTurn = new SharedData();
 
         // initialization
         public SinglePlayForm()
         {
             InitializeComponent();
-            Load += SinglePlayForm_Load;
+            //Load += SinglePlayForm_Load;
             FormClosing += closing;
             closeProgram = true;
         }
@@ -36,7 +37,15 @@ namespace OmokProgram
         {
             playing = true;
             Thread gameThread = new Thread(playGame);
+            gameThread.IsBackground = true;  // 프로세스 종료시 스레드도 종료.
             gameThread.Start();
+        }
+        private void SinglePlayForm_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                pnBoard.formMinimized = true;
+            }
         }
         private void pnShowColor_Paint(object sender, PaintEventArgs e)
         {
@@ -67,29 +76,88 @@ namespace OmokProgram
         }
         public void playGame()
         {
-            while (!playing)
+            while (playing)
             {
                 if (playerColor == turn) // 플레이어 차례
                 {
                     Console.WriteLine("player");
-                    // 게임이 끝났는지 판단은 여기서 해.
+
+                    enableBtnPut();
+                    changelbTurnText("Your Turn");
+                    while (sharedTurn.playerTurn) Thread.Sleep(10);  // 너무 빠르게 확인 못하게
+                    // thread signal
+                    // 게임이 끝났는지 판단은 여기서 해. => playing == false
                     turn = playerColor == "black" ? "white" : "black";
+
+                    Console.WriteLine("player finished");
                 }
                 else // 컴퓨터 차례
                 {
                     Console.WriteLine("computer");
-                    // 게임이 끝났는지 판단은 여기서 해.
+
+                    disableBtnPut();
+                    changelbTurnText("Com's Turn");
+                    Thread.Sleep(1000);
+                    // 여기는 ai 알고리즘 돌려야 함.
+                    // 해당 return 값을 pnBoard.axis[0],[1]에 저장
+                    // drawStone();
+                    sharedTurn.computerTurnFinished();
+                    // 게임이 끝났는지 판단은 여기서 해. => playing == false
                     turn = playerColor == "black" ? "black" : "white";
+
+                    Console.WriteLine("computer finished");
                 }
+
+                pnBoard.axis = new int[2] { -1, -1 };    // 좌표 초기화
             }
+
+            // playing == false => btn.Visible == true로 변경
         }
-        // // TODO
-        // 1. put(바둑알 놓기) 함수 구현하면 pnBoard에게서 좌표 받아와야 함.
-        // 2. 해당 좌표를 기준으로 맞는 색깔에 따라 바둑알 표시.
-        // 3. board 업데이트.
-        // 4. 끝났는지 판단.
-        // 5. pnBoard.axis를 -1,-1로 초기화 후 턴 넘겨줌.
         private void btnPut_Click(object sender, EventArgs e)
+        {
+            if (pnBoard.axis[0] < 0 || pnBoard.axis[0] >= 15 ||
+               pnBoard.axis[1] < 0 || pnBoard.axis[1] >= 15 ||
+               pnBoard.board[pnBoard.axis[0], pnBoard.axis[1]] != STONE.none)
+            {
+                Console.WriteLine("좌표 {0} {1}", pnBoard.axis[0], pnBoard.axis[1]);
+                Console.WriteLine("금지된 위치");
+                MessageBox.Show("착수 위치를 다시 지정해주세요");
+                return;
+            }
+                
+            drawStone();
+            sharedTurn.playerTurnFinished();
+        }
+        private void enableBtnPut()
+        {
+            if (InvokeRequired)
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    pnBoard.pnSelectedSign.Enabled = true;
+                    btnPut.Enabled = true;
+                }));
+            else pnBoard.pnSelectedSign.Enabled = true; btnPut.Enabled = true;
+        }
+        private void disableBtnPut()
+        {
+            if (InvokeRequired)
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    pnBoard.pnSelectedSign.Enabled = false;
+                    btnPut.Enabled = false;
+                }));
+            else pnBoard.pnSelectedSign.Enabled = false; btnPut.Enabled = false;
+        }
+        private void changelbTurnText(string str)
+        {
+            if (InvokeRequired)
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    lbTurn.Text = str;
+                }));
+            else lbTurn.Text = str;
+        }
+        private void drawStone()
         {
             Rectangle r = new Rectangle(
                 pnBoard.margin + pnBoard.gridSize * pnBoard.axis[0] - pnBoard.gridSize / 2,
@@ -97,20 +165,32 @@ namespace OmokProgram
                 pnBoard.stoneSize,
                 pnBoard.stoneSize
             );
-            pnBoard.pnSelectedSign.Location = new Point(-100,-100);
+            StringFormat seqStringFormat = new StringFormat();
+            seqStringFormat.Alignment = StringAlignment.Center;
+            seqStringFormat.LineAlignment = StringAlignment.Center;
+
+            pnBoard.pnSelectedSign.Location = new Point(-100, -100);
             if (turn == "black")
             {
                 Bitmap bmp = new Bitmap("../../Properties/stoneBlack.png");
                 pnBoard.g.DrawImage(bmp, r);
                 pnBoard.board[pnBoard.axis[0], pnBoard.axis[1]] = STONE.black;
-                turn = "white";
+
+                Brush b = Brushes.White;
+                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(), pnBoard.seqFont,
+                                    b, r, seqStringFormat);
+                pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, b));
             }
             else
             {
                 Bitmap bmp = new Bitmap("../../Properties/stoneWhite.png");
                 pnBoard.g.DrawImage(bmp, r);
                 pnBoard.board[pnBoard.axis[0], pnBoard.axis[1]] = STONE.white;
-                turn = "black";
+
+                Brush b = Brushes.Black;
+                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(), pnBoard.seqFont,
+                                    b, r, seqStringFormat);
+                pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, b));
             }
         }
 
@@ -118,6 +198,27 @@ namespace OmokProgram
         private void closing(object sender, EventArgs e)
         {
             if (closeProgram) Application.Exit();
+        }
+    }
+
+    public class SharedData
+    {
+        private object obj = new object();
+        public bool playerTurn = true;
+
+        public void playerTurnFinished()
+        {
+            lock (obj)
+            {
+                if (playerTurn) playerTurn = false;
+            }
+        }
+        public void computerTurnFinished()
+        {
+            lock (obj)
+            {
+                if (!playerTurn) playerTurn = true;
+            }
         }
     }
 }
