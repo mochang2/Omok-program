@@ -42,7 +42,7 @@ namespace OmokProgram
         private void btnGameStart_Click(object sender, EventArgs e)
         {
             closeProgram = false;
-            singlePlayForm.playerColor = rbBlack.Checked ? "black" : "white";
+            singlePlayForm.playerColor = rbBlack.Checked ? STONE.black : STONE.white;
             Close();
             singlePlayForm.Show();
         }

@@ -48,7 +48,7 @@ namespace OmokProgram
         public int stoneCnt = 0;
         public List<SEQUENCE_DATA> gameSeq = new List<SEQUENCE_DATA>();
 
-
+        
         // initialize
         public pnBoard()
         {

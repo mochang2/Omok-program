@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace OmokProgram
 {
@@ -18,12 +19,20 @@ namespace OmokProgram
         public event mainFormMaximizeHandler mainFormNormal;
         private bool closeProgram;
 
+        // multi threading
+        Thread gameThread;
+        private int oneTurnTime = 15;
+        private Stopwatch stopwatch = new Stopwatch();
+        private AutoResetEvent ar = new AutoResetEvent(false);
+
         // game
-        public string playerColor = "";
+        public STONE playerColor;
+        private STONE turn = STONE.black;
+        private STONE winner;
         private Graphics g;
-        private string turn = "black";
         private bool playing = false;
-        private SharedData sharedTurn = new SharedData();
+        Algorithm algorithm = new Algorithm();
+        
 
         // initialization
         public SinglePlayForm()
@@ -36,8 +45,9 @@ namespace OmokProgram
         private void SinglePlayForm_Load(object sender, EventArgs e)
         {
             playing = true;
-            Thread gameThread = new Thread(playGame);
+            gameThread = new Thread(playGame);
             gameThread.IsBackground = true;  // 프로세스 종료시 스레드도 종료.
+            gameThread.Name = "gameThread";
             gameThread.Start();
         }
         private void SinglePlayForm_Resize(object sender, EventArgs e)
@@ -49,8 +59,8 @@ namespace OmokProgram
         }
         private void pnShowColor_Paint(object sender, PaintEventArgs e)
         {
-            string black = playerColor == "black" ? "YOU" : "COM";
-            string white = playerColor == "white" ? "YOU" : "COM";
+            string black = playerColor == STONE.black ? "YOU" : "COM";
+            string white = playerColor == STONE.white ? "YOU" : "COM";
             Font font = new Font("Arial", 14);
             SolidBrush solidbrush = new SolidBrush(Color.Black); // pnBoard 꺼 써보기.
             StringFormat sf = new StringFormat();
@@ -71,11 +81,25 @@ namespace OmokProgram
         }
         private void timer_Tick(object sender, EventArgs e)
         {
-            // 00초인거 학인해야 함
-            lbTime.Text = (int.Parse(lbTime.Text.Substring(0, 2)) - 1).ToString("D2") + "초";
+            if (lbTime.Text == "00초")
+            {
+                if (InvokeRequired)  // pnSelectedSign을 치움.
+                {
+                    Invoke(new MethodInvoker(delegate ()
+                    {
+                        pnBoard.pnSelectedSign.Location = new Point(-100, -100);
+                    }));
+                }
+                else pnBoard.pnSelectedSign.Location = new Point(-100, -100);
+                ar.Set();
+            }
+            lbTime.Text = (oneTurnTime - stopwatch.Elapsed.Seconds).ToString("D2") + "초" == "-01초" ?
+                "--초" : (oneTurnTime - stopwatch.Elapsed.Seconds).ToString("D2") + "초";
         }
         public void playGame()
         {
+            stopwatch.Start();
+
             while (playing)
             {
                 if (playerColor == turn) // 플레이어 차례
@@ -84,10 +108,24 @@ namespace OmokProgram
 
                     enableBtnPut();
                     changelbTurnText("Your Turn");
-                    while (sharedTurn.playerTurn) Thread.Sleep(10);  // 너무 빠르게 확인 못하게
-                    // thread signal
-                    // 게임이 끝났는지 판단은 여기서 해. => playing == false
-                    turn = playerColor == "black" ? "white" : "black";
+                    try
+                    {
+                        ar.WaitOne();  // drawStone() 포함됨
+                    }
+                    catch (ThreadInterruptedException ex)
+                    {
+                        Console.WriteLine("exception caused by surrender {0}", ex.ToString());
+                        playing = false;
+                        break;
+                    }
+                    winner = algorithm.checkOmok
+                        (pnBoard.board, pnBoard.axis[0], pnBoard.axis[1],turn);
+                    if (winner != STONE.none)
+                    {
+                        playing = false;
+                        break;
+                    }
+                    turn = playerColor == STONE.black ? STONE.white : STONE.black;
 
                     Console.WriteLine("player finished");
                 }
@@ -97,21 +135,42 @@ namespace OmokProgram
 
                     disableBtnPut();
                     changelbTurnText("Com's Turn");
-                    Thread.Sleep(1000);
-                    // 여기는 ai 알고리즘 돌려야 함.
-                    // 해당 return 값을 pnBoard.axis[0],[1]에 저장
-                    // drawStone();
-                    sharedTurn.computerTurnFinished();
-                    // 게임이 끝났는지 판단은 여기서 해. => playing == false
-                    turn = playerColor == "black" ? "black" : "white";
+                    try
+                    {
+                        pnBoard.axis = algorithm.omokAI(pnBoard.board);
+                    }
+                    catch (ThreadInterruptedException ex)
+                    {
+                        Console.WriteLine("exception caused by surrender {0}", ex.ToString());
+                        playing = false;
+                        break;
+                    }
+                    drawStone();
+                    winner = algorithm.checkOmok
+                        (pnBoard.board, pnBoard.axis[0], pnBoard.axis[1], turn);
+                    if (winner != STONE.none)
+                    {
+                        playing = false;
+                        break;
+                    }
+                    turn = playerColor == STONE.black ? STONE.black : STONE.white;
 
                     Console.WriteLine("computer finished");
                 }
 
+                if (pnBoard.stoneCnt == pnBoard.board.Length)  // 바둑판이 꽉 찼지만 승자가 없으면 무승부
+                {
+                    winner = STONE.none;
+                    playing = false;
+                    break;
+                }
                 pnBoard.axis = new int[2] { -1, -1 };    // 좌표 초기화
+                stopwatch.Restart();
             }
 
-            // playing == false => btn.Visible == true로 변경
+            stopwatch.Stop();
+            Console.WriteLine("winner: {0}", winner);
+            showFinishScreen();
         }
         private void btnPut_Click(object sender, EventArgs e)
         {
@@ -126,7 +185,7 @@ namespace OmokProgram
             }
                 
             drawStone();
-            sharedTurn.playerTurnFinished();
+            ar.Set();
         }
         private void enableBtnPut()
         {
@@ -159,6 +218,7 @@ namespace OmokProgram
         }
         private void drawStone()
         {
+            Console.WriteLine("x: {0}, y: {1}", pnBoard.axis[0], pnBoard.axis[1]);
             Rectangle r = new Rectangle(
                 pnBoard.margin + pnBoard.gridSize * pnBoard.axis[0] - pnBoard.gridSize / 2,
                 pnBoard.margin + pnBoard.gridSize * pnBoard.axis[1] - pnBoard.gridSize / 2,
@@ -169,8 +229,16 @@ namespace OmokProgram
             seqStringFormat.Alignment = StringAlignment.Center;
             seqStringFormat.LineAlignment = StringAlignment.Center;
 
-            pnBoard.pnSelectedSign.Location = new Point(-100, -100);
-            if (turn == "black")
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    pnBoard.pnSelectedSign.Location = new Point(-100, -100);
+                }));
+            }
+            else pnBoard.pnSelectedSign.Location = new Point(-100, -100);
+
+            if (turn == STONE.black)
             {
                 Bitmap bmp = new Bitmap("../../Properties/stoneBlack.png");
                 pnBoard.g.DrawImage(bmp, r);
@@ -193,32 +261,61 @@ namespace OmokProgram
                 pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, b));
             }
         }
+        private void showFinishScreen()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    lbTime.Visible = false;
+                    lbTurn.Visible = false;
+                    btnPut.Visible = false;
+                    btnSurrender.Visible = false;
+                    hourGlassWrapper.Visible = false;
+                    btnReplay.Visible = true;
+                    btnClose.Visible = true;
+                    lbResult.Visible = true;
+                    if (winner == playerColor) lbResult.Text = "YOU WIN";
+                    else if (winner == STONE.none) lbResult.Text = "YOU DRAW";
+                    else lbResult.Text = "YOU LOSE";
+                }));
+            }
+            else
+            {
+                lbTime.Visible = false;
+                lbTurn.Visible = false;
+                btnPut.Visible = false;
+                btnSurrender.Visible = false;
+                hourGlassWrapper.Visible = false;
+                btnReplay.Visible = true;
+                btnClose.Visible = true;
+                lbResult.Visible = true;
+                if (winner == playerColor) lbResult.Text = "YOU WIN";
+                else if (winner == STONE.none) lbResult.Text = "YOU DRAW";
+                else lbResult.Text = "YOU LOSE";
+            }
+        }
+        private void btnSurrender_Click(object sender, EventArgs e)
+        {
+            winner = playerColor == STONE.black ? STONE.white : STONE.black;
+            gameThread.Interrupt();
+        }
 
         // close
+        private void btnReplay_Click(object sender, EventArgs e)
+        {
+            closeProgram = false;
+            SinglePlayOptionForm singlePlayOptionForm = new SinglePlayOptionForm();
+            Close();
+            singlePlayOptionForm.Show();
+        }
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
         private void closing(object sender, EventArgs e)
         {
             if (closeProgram) Application.Exit();
-        }
-    }
-
-    public class SharedData
-    {
-        private object obj = new object();
-        public bool playerTurn = true;
-
-        public void playerTurnFinished()
-        {
-            lock (obj)
-            {
-                if (playerTurn) playerTurn = false;
-            }
-        }
-        public void computerTurnFinished()
-        {
-            lock (obj)
-            {
-                if (!playerTurn) playerTurn = true;
-            }
         }
     }
 }

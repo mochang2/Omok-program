@@ -38,12 +38,13 @@ namespace OmokProgram
             this.btnPut = new System.Windows.Forms.Button();
             this.btnSurrender = new System.Windows.Forms.Button();
             this.btnReplay = new System.Windows.Forms.Button();
-            this.btnChangeConf = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.lbResult = new System.Windows.Forms.Label();
             this.pnBackToHome = new OmokProgram.pnBackToHome();
             this.pnBoard = new OmokProgram.pnBoard();
             this.pnInRight = new OmokProgram.pnInRight();
             this.pnBg = new OmokProgram.pnBg();
+            this.btnClose = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // pnShowColor
@@ -57,20 +58,19 @@ namespace OmokProgram
             // 
             // lbTurn
             // 
-            this.lbTurn.AutoSize = true;
             this.lbTurn.BackColor = System.Drawing.Color.White;
             this.lbTurn.Cursor = System.Windows.Forms.Cursors.Default;
             this.lbTurn.Font = new System.Drawing.Font("나눔고딕", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.lbTurn.Location = new System.Drawing.Point(532, 216);
             this.lbTurn.Name = "lbTurn";
             this.lbTurn.Padding = new System.Windows.Forms.Padding(20, 10, 20, 10);
-            this.lbTurn.Size = new System.Drawing.Size(126, 40);
+            this.lbTurn.Size = new System.Drawing.Size(140, 40);
             this.lbTurn.TabIndex = 6;
             this.lbTurn.Text = "Your Turn";
+            this.lbTurn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbTime
             // 
-            this.lbTime.AutoSize = true;
             this.lbTime.BackColor = System.Drawing.Color.White;
             this.lbTime.Cursor = System.Windows.Forms.Cursors.Default;
             this.lbTime.Font = new System.Drawing.Font("나눔고딕", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
@@ -125,6 +125,7 @@ namespace OmokProgram
             this.btnSurrender.TabIndex = 10;
             this.btnSurrender.Text = "기권";
             this.btnSurrender.UseVisualStyleBackColor = false;
+            this.btnSurrender.Click += new System.EventHandler(this.btnSurrender_Click);
             // 
             // btnReplay
             // 
@@ -134,7 +135,7 @@ namespace OmokProgram
             this.btnReplay.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnReplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnReplay.Font = new System.Drawing.Font("휴먼둥근헤드라인", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnReplay.Location = new System.Drawing.Point(532, 216);
+            this.btnReplay.Location = new System.Drawing.Point(532, 210);
             this.btnReplay.Margin = new System.Windows.Forms.Padding(0);
             this.btnReplay.Name = "btnReplay";
             this.btnReplay.Size = new System.Drawing.Size(140, 52);
@@ -142,29 +143,25 @@ namespace OmokProgram
             this.btnReplay.Text = "다시하기";
             this.btnReplay.UseVisualStyleBackColor = false;
             this.btnReplay.Visible = false;
-            // 
-            // btnChangeConf
-            // 
-            this.btnChangeConf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(234)))), ((int)(((byte)(206)))));
-            this.btnChangeConf.CausesValidation = false;
-            this.btnChangeConf.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnChangeConf.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.btnChangeConf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnChangeConf.Font = new System.Drawing.Font("휴먼둥근헤드라인", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnChangeConf.Location = new System.Drawing.Point(532, 296);
-            this.btnChangeConf.Margin = new System.Windows.Forms.Padding(0);
-            this.btnChangeConf.Name = "btnChangeConf";
-            this.btnChangeConf.Size = new System.Drawing.Size(140, 52);
-            this.btnChangeConf.TabIndex = 12;
-            this.btnChangeConf.Text = "다시하기";
-            this.btnChangeConf.UseVisualStyleBackColor = false;
-            this.btnChangeConf.Visible = false;
+            this.btnReplay.Click += new System.EventHandler(this.btnReplay_Click);
             // 
             // timer
             // 
             this.timer.Enabled = true;
             this.timer.Interval = 1000;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
+            // lbResult
+            // 
+            this.lbResult.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(184)))), ((int)(((byte)(92)))));
+            this.lbResult.Font = new System.Drawing.Font("배달의민족 한나는 열한살", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbResult.Location = new System.Drawing.Point(510, 380);
+            this.lbResult.Name = "lbResult";
+            this.lbResult.Size = new System.Drawing.Size(180, 50);
+            this.lbResult.TabIndex = 12;
+            this.lbResult.Text = "YOU DRAW";
+            this.lbResult.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lbResult.Visible = false;
             // 
             // pnBackToHome
             // 
@@ -206,12 +203,31 @@ namespace OmokProgram
             this.pnBg.Size = new System.Drawing.Size(724, 560);
             this.pnBg.TabIndex = 1;
             // 
+            // btnClose
+            // 
+            this.btnClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(234)))), ((int)(((byte)(206)))));
+            this.btnClose.CausesValidation = false;
+            this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnClose.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnClose.Font = new System.Drawing.Font("휴먼둥근헤드라인", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnClose.Location = new System.Drawing.Point(532, 290);
+            this.btnClose.Margin = new System.Windows.Forms.Padding(0);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(140, 52);
+            this.btnClose.TabIndex = 13;
+            this.btnClose.Text = "종료하기";
+            this.btnClose.UseVisualStyleBackColor = false;
+            this.btnClose.Visible = false;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
             // SinglePlayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 560);
-            this.Controls.Add(this.btnChangeConf);
+            this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.lbResult);
             this.Controls.Add(this.btnReplay);
             this.Controls.Add(this.btnSurrender);
             this.Controls.Add(this.btnPut);
@@ -228,7 +244,6 @@ namespace OmokProgram
             this.Load += new System.EventHandler(this.SinglePlayForm_Load);
             this.Resize += new System.EventHandler(this.SinglePlayForm_Resize);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -244,8 +259,9 @@ namespace OmokProgram
         private System.Windows.Forms.Button btnPut;
         private System.Windows.Forms.Button btnSurrender;
         private System.Windows.Forms.Button btnReplay;
-        private System.Windows.Forms.Button btnChangeConf;
         private System.Windows.Forms.Timer timer;
         private pnBoard pnBoard;
+        private System.Windows.Forms.Label lbResult;
+        private System.Windows.Forms.Button btnClose;
     }
 }
