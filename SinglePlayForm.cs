@@ -38,7 +38,6 @@ namespace OmokProgram
         public SinglePlayForm()
         {
             InitializeComponent();
-            //Load += SinglePlayForm_Load;
             FormClosing += closing;
             closeProgram = true;
         }
@@ -83,7 +82,7 @@ namespace OmokProgram
         {
             if (lbTime.Text == "00초")
             {
-                if (InvokeRequired)  // pnSelectedSign을 치움.
+                if (InvokeRequired)  // pnSelectedSign을 치움. 타이머 스레드에서 UI 스레드 접근. 크로스 스레딩.
                 {
                     Invoke(new MethodInvoker(delegate ()
                     {
@@ -108,7 +107,7 @@ namespace OmokProgram
 
                     enableBtnPut();
                     changelbTurnText("Your Turn");
-                    try
+                    try  // 기권에 대한 예외처리(thread.Interrupt())
                     {
                         ar.WaitOne();  // drawStone() 포함됨
                     }
@@ -135,7 +134,7 @@ namespace OmokProgram
 
                     disableBtnPut();
                     changelbTurnText("Com's Turn");
-                    try
+                    try  // 기권에 대한 예외처리(thread.Interrupt())
                     {
                         pnBoard.axis = algorithm.omokAI(pnBoard.board);
                     }
@@ -165,9 +164,10 @@ namespace OmokProgram
                     break;
                 }
                 pnBoard.axis = new int[2] { -1, -1 };    // 좌표 초기화
-                stopwatch.Restart();
+                stopwatch.Restart();  // 타이머 재시작
             }
 
+            // 게임 종료
             stopwatch.Stop();
             Console.WriteLine("winner: {0}", winner);
             showFinishScreen();
@@ -187,7 +187,7 @@ namespace OmokProgram
             drawStone();
             ar.Set();
         }
-        private void enableBtnPut()
+        private void enableBtnPut()  // playGame 스레드에서 UI 스레드 접근. 크로스 스레딩.
         {
             if (InvokeRequired)
                 Invoke(new MethodInvoker(delegate ()
@@ -197,7 +197,7 @@ namespace OmokProgram
                 }));
             else pnBoard.pnSelectedSign.Enabled = true; btnPut.Enabled = true;
         }
-        private void disableBtnPut()
+        private void disableBtnPut()  // playGame 스레드에서 UI 스레드 접근. 크로스 스레딩.
         {
             if (InvokeRequired)
                 Invoke(new MethodInvoker(delegate ()
@@ -207,7 +207,7 @@ namespace OmokProgram
                 }));
             else pnBoard.pnSelectedSign.Enabled = false; btnPut.Enabled = false;
         }
-        private void changelbTurnText(string str)
+        private void changelbTurnText(string str)  // playGame 스레드에서 UI 스레드 접근. 크로스 스레딩.
         {
             if (InvokeRequired)
                 Invoke(new MethodInvoker(delegate ()
@@ -229,7 +229,7 @@ namespace OmokProgram
             seqStringFormat.Alignment = StringAlignment.Center;
             seqStringFormat.LineAlignment = StringAlignment.Center;
 
-            if (InvokeRequired)
+            if (InvokeRequired)  // playGame 스레드에서 UI 스레드 접근. 크로스 스레딩.
             {
                 Invoke(new MethodInvoker(delegate ()
                 {
@@ -261,7 +261,7 @@ namespace OmokProgram
                 pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, b));
             }
         }
-        private void showFinishScreen()
+        private void showFinishScreen()  // playGame 스레드에서 UI 스레드 접근. 크로스 스레딩.
         {
             if (InvokeRequired)
             {

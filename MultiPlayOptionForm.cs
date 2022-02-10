@@ -17,9 +17,11 @@ namespace OmokProgram
         private bool closeProgram;
         public MultiPlayForm multiPlayForm;
 
+        // connection
         private TextBox[] txtList;
         private const string IPPlaceholder = "IP";
         private const string portPlaceholder = "Port";
+
 
         public MultiPlayOptionForm()
         {
@@ -75,6 +77,20 @@ namespace OmokProgram
         private void closing(object sender, EventArgs e)
         {
             if (closeProgram) Application.Exit();
+        }
+    }
+
+    public class Protocol
+    {
+        public byte command;
+        public byte turn;
+        public byte data;
+
+        public Protocol()
+        {
+            command = (byte)0;
+            turn = (byte)0;
+            data = (byte)0;
         }
     }
 }
