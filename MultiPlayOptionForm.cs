@@ -12,8 +12,6 @@ namespace OmokProgram
 {
     public partial class MultiPlayOptionForm : Form
     {
-        public delegate void mainFormMaximizeHandler(object sender, EventArgs e);
-        public event mainFormMaximizeHandler mainFormNormal;
         private bool closeProgram;
         public MultiPlayForm multiPlayForm;
 
@@ -21,6 +19,9 @@ namespace OmokProgram
         private TextBox[] txtList;
         private const string IPPlaceholder = "IP";
         private const string portPlaceholder = "Port";
+        private bool connection = false;  // 연결되면 true
+        private bool ready = false; // ready 보내고 true
+        // 이후에 multiplay game 띄우기
 
 
         public MultiPlayOptionForm()
@@ -64,7 +65,8 @@ namespace OmokProgram
         {
             closeProgram = false;
             Close();
-            mainFormNormal(sender, e);
+            if (Application.OpenForms["mainForm"] != null)
+                Application.OpenForms["mainForm"].WindowState = FormWindowState.Normal;
         }
         private void btnGameStart_Click(object sender, EventArgs e)
         {

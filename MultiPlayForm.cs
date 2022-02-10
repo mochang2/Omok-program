@@ -12,8 +12,10 @@ namespace OmokProgram
 {
     public partial class MultiPlayForm : Form
     {
-        public delegate void mainFormMaximizeHandler(object sender, EventArgs e);
-        public event mainFormMaximizeHandler mainFormNormal;
+        // 순서(비동기 작업 x). public turn을 가지고 있다가
+        // multi play option form에서 연결 성공하면 여기 turn에 저장하기.
+        // 
+
         private bool closeProgram;
 
         public MultiPlayForm()
@@ -26,7 +28,8 @@ namespace OmokProgram
         {
             closeProgram = false;
             Close();
-            mainFormNormal(sender, e);
+            if (Application.OpenForms["mainForm"] != null)
+                Application.OpenForms["mainForm"].WindowState = FormWindowState.Normal;
         }
 
         private void closing(object sender, EventArgs e)

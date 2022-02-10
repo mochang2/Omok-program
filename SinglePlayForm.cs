@@ -15,8 +15,6 @@ namespace OmokProgram
     public partial class SinglePlayForm : Form
     {
         // win form
-        public delegate void mainFormMaximizeHandler(object sender, EventArgs e);
-        public event mainFormMaximizeHandler mainFormNormal;
         private bool closeProgram;
 
         // multi threading
@@ -76,7 +74,8 @@ namespace OmokProgram
         {
             closeProgram = false;
             Close();
-            mainFormNormal(sender, e);
+            if (Application.OpenForms["mainForm"] != null)
+                Application.OpenForms["mainForm"].WindowState = FormWindowState.Normal;
         }
         private void timer_Tick(object sender, EventArgs e)
         {
@@ -163,6 +162,7 @@ namespace OmokProgram
                     playing = false;
                     break;
                 }
+                drawForbidden();  // 흑돌에 대한 금수 적용 -> 화면에 X 표시
                 pnBoard.axis = new int[2] { -1, -1 };    // 좌표 초기화
                 stopwatch.Restart();  // 타이머 재시작
             }
@@ -259,6 +259,33 @@ namespace OmokProgram
                 pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(), pnBoard.seqFont,
                                     b, r, seqStringFormat);
                 pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, b));
+            }
+        }
+        private void drawForbidden()
+        {
+            for (int i = 1; i < pnBoard.lineCnt - 1; i++)
+            {
+                for (int j = 1; j < pnBoard.lineCnt - 1; j++)
+                {
+                    if (pnBoard.board[j, i] != STONE.none) continue;
+                    if (algorithm.checkForbidden(j, i))
+                    {
+                        if (InvokeRequired)
+                        {
+                            Invoke(new MethodInvoker(delegate ()
+                            {
+                                pnBoard.g.DrawString("X", Font, pnBoard.rBrush,
+                                    pnBoard.margin + pnBoard.gridSize * j - pnBoard.gridSize / 4,
+                                    pnBoard.margin + pnBoard.gridSize * i - pnBoard.gridSize / 4);
+                            }));
+                        }
+                        else pnBoard.g.DrawString("X", Font, pnBoard.rBrush,
+                                pnBoard.margin + pnBoard.gridSize * j - pnBoard.gridSize / 4,
+                                pnBoard.margin + pnBoard.gridSize * i - pnBoard.gridSize / 4);
+                    }
+
+                    // 지우는 거 추가
+                }
             }
         }
         private void showFinishScreen()  // playGame 스레드에서 UI 스레드 접근. 크로스 스레딩.

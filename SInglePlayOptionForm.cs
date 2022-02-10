@@ -12,10 +12,8 @@ namespace OmokProgram
 {
     public partial class SinglePlayOptionForm : Form
     {
-        public delegate void mainFormMaximizeHandler(object sender, EventArgs e);
-        public event mainFormMaximizeHandler mainFormNormal;
         private bool closeProgram;
-        public SinglePlayForm singlePlayForm;
+        private SinglePlayForm singlePlayForm = new SinglePlayForm();
 
         public SinglePlayOptionForm()
         {
@@ -37,7 +35,8 @@ namespace OmokProgram
         {
             closeProgram = false;
             Close();
-            mainFormNormal(sender, e);
+            if (Application.OpenForms["mainForm"] != null)
+                Application.OpenForms["mainForm"].WindowState = FormWindowState.Normal;
         }
         private void btnGameStart_Click(object sender, EventArgs e)
         {

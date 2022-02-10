@@ -18,6 +18,128 @@ namespace OmokProgram
         private int y;
         private STONE[,] board;
 
+
+        public bool checkForbidden(int x, int y)
+        {
+            board[x, y] = STONE.black;  // 해당 빈 공간이 검정돌일 때를 가정
+
+            List<Point> axisList = new List<Point>();
+            axisList = checkOpenDir1(x, y);
+            if (axisList.Count == 3) // 33 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir2(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 3))
+                    {
+                        board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+            else if (axisList.Count == 4) // 44 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir2(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 4))
+                    {
+                        board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+
+            axisList = checkOpenDir2(x, y);
+            if (axisList.Count == 3) // 33 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 3)||
+                        (checkOpenDir3(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 3))
+                    {
+                        board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+            else if (axisList.Count == 4) // 44 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 4)||
+                        (checkOpenDir3(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 4))
+                    {
+                        board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+
+            axisList = checkOpenDir3(x, y);
+            if (axisList.Count == 3) // 33 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 3)||
+                        (checkOpenDir2(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 3))
+                    {
+                        board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+            else if (axisList.Count == 4) // 44 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 4)||
+                        (checkOpenDir2(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 4))
+                    {
+                        board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+
+            axisList = checkOpenDir4(x, y);
+            if (axisList.Count == 3) // 33 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 3)||
+                        (checkOpenDir2(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 3))
+                    {
+                        board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+            else if (axisList.Count == 4) // 44 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 4)||
+                        (checkOpenDir2(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 4))
+                    {
+                        board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+
+            board[x, y] = STONE.none;
+            return false;
+        }
+
         // 게임이 끝났는지 확인하는 알고리즘. return bool
         public STONE checkOmok(STONE[,] board, int x, int y, STONE color)
         { // 승부 안남: none, 
