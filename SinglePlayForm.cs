@@ -29,6 +29,7 @@ namespace OmokProgram
         private STONE winner;
         private Graphics g;
         private bool playing = false;
+        private List<Point> forbiddenAxisList = new List<Point>();
         Algorithm algorithm = new Algorithm();
         
 
@@ -268,8 +269,9 @@ namespace OmokProgram
                 for (int j = 1; j < pnBoard.lineCnt - 1; j++)
                 {
                     if (pnBoard.board[j, i] != STONE.none) continue;
-                    if (algorithm.checkForbidden(j, i))
+                    if (algorithm.checkForbidden(j, i, pnBoard.board))
                     {
+                        forbiddenAxisList.Add(new Point(j, i));
                         if (InvokeRequired)
                         {
                             Invoke(new MethodInvoker(delegate ()
@@ -283,10 +285,29 @@ namespace OmokProgram
                                 pnBoard.margin + pnBoard.gridSize * j - pnBoard.gridSize / 4,
                                 pnBoard.margin + pnBoard.gridSize * i - pnBoard.gridSize / 4);
                     }
-
-                    // 지우는 거 추가
+                    else
+                    {
+                        int index = forbiddenAxisList.FindIndex(x => x.X == j && x.Y == i);
+                        if (index != -1)
+                        {
+                            forbiddenAxisList.RemoveAt(index);
+                            if (InvokeRequired)
+                            {
+                                Invoke(new MethodInvoker(delegate ()
+                                {
+                                    pnBoard.g.DrawString("X", Font, pnBoard.boardBrush,
+                                        pnBoard.margin + pnBoard.gridSize * j - pnBoard.gridSize / 4,
+                                        pnBoard.margin + pnBoard.gridSize * i - pnBoard.gridSize / 4);
+                                }));
+                            }
+                            else pnBoard.g.DrawString("X", Font, pnBoard.boardBrush,
+                                    pnBoard.margin + pnBoard.gridSize * j - pnBoard.gridSize / 4,
+                                    pnBoard.margin + pnBoard.gridSize * i - pnBoard.gridSize / 4);
+                        }
+                    }
                 }
             }
+            pnBoard.drawBoard();
         }
         private void showFinishScreen()  // playGame 스레드에서 UI 스레드 접근. 크로스 스레딩.
         {

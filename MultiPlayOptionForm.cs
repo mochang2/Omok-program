@@ -13,14 +13,12 @@ namespace OmokProgram
     public partial class MultiPlayOptionForm : Form
     {
         private bool closeProgram;
-        public MultiPlayForm multiPlayForm;
+        public MultiPlayForm multiPlayForm = new MultiPlayForm();
 
         // connection
         private TextBox[] txtList;
         private const string IPPlaceholder = "IP";
         private const string portPlaceholder = "Port";
-        private bool connection = false;  // 연결되면 true
-        private bool ready = false; // ready 보내고 true
         // 이후에 multiplay game 띄우기
 
 
@@ -34,8 +32,8 @@ namespace OmokProgram
             foreach (var txt in txtList)
             {
                 txt.ForeColor = Color.DarkGray;
-                if (txt == txtIP) txt.Text = IPPlaceholder;
-                else if (txt == txtPort) txt.Text = portPlaceholder;
+                if (txt == txtIP && string.IsNullOrWhiteSpace(txt.Text)) txt.Text = IPPlaceholder;
+                else if (txt == txtPort && string.IsNullOrWhiteSpace(txt.Text)) txt.Text = portPlaceholder;
 
                 txt.GotFocus += RemovePlaceholder;
                 txt.LostFocus += SetPlaceholder;
@@ -71,28 +69,22 @@ namespace OmokProgram
         private void btnGameStart_Click(object sender, EventArgs e)
         {
             // ip, port 조건 필요
-            closeProgram = false;
-            Close();
-            multiPlayForm.Show();
+            if (string.IsNullOrEmpty(txtIP.Text) ||
+                string.IsNullOrEmpty(txtPort.Text))
+                MessageBox.Show("IP와 Port를 입력해주세요.");
+            else
+            {
+                multiPlayForm.sip = txtIP.Text;
+                multiPlayForm.sport = txtPort.Text;
+                closeProgram = false;
+                Close();
+                multiPlayForm.Show();
+            }
         }
 
         private void closing(object sender, EventArgs e)
         {
             if (closeProgram) Application.Exit();
-        }
-    }
-
-    public class Protocol
-    {
-        public byte command;
-        public byte turn;
-        public byte data;
-
-        public Protocol()
-        {
-            command = (byte)0;
-            turn = (byte)0;
-            data = (byte)0;
         }
     }
 }

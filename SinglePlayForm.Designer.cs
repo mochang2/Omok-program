@@ -32,12 +32,10 @@ namespace OmokProgram
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SinglePlayForm));
             this.pnShowColor = new System.Windows.Forms.Panel();
-            this.lbTurn = new System.Windows.Forms.Label();
             this.lbTime = new System.Windows.Forms.Label();
             this.hourGlassWrapper = new System.Windows.Forms.Button();
             this.btnPut = new System.Windows.Forms.Button();
             this.btnSurrender = new System.Windows.Forms.Button();
-            this.btnReplay = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.lbResult = new System.Windows.Forms.Label();
             this.pnBackToHome = new OmokProgram.pnBackToHome();
@@ -45,6 +43,8 @@ namespace OmokProgram
             this.pnInRight = new OmokProgram.pnInRight();
             this.pnBg = new OmokProgram.pnBg();
             this.btnClose = new System.Windows.Forms.Button();
+            this.lbTurn = new System.Windows.Forms.Label();
+            this.btnReplay = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // pnShowColor
@@ -55,19 +55,6 @@ namespace OmokProgram
             this.pnShowColor.Size = new System.Drawing.Size(190, 52);
             this.pnShowColor.TabIndex = 5;
             this.pnShowColor.Paint += new System.Windows.Forms.PaintEventHandler(this.pnShowColor_Paint);
-            // 
-            // lbTurn
-            // 
-            this.lbTurn.BackColor = System.Drawing.Color.White;
-            this.lbTurn.Cursor = System.Windows.Forms.Cursors.Default;
-            this.lbTurn.Font = new System.Drawing.Font("나눔고딕", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lbTurn.Location = new System.Drawing.Point(532, 216);
-            this.lbTurn.Name = "lbTurn";
-            this.lbTurn.Padding = new System.Windows.Forms.Padding(20, 10, 20, 10);
-            this.lbTurn.Size = new System.Drawing.Size(140, 40);
-            this.lbTurn.TabIndex = 6;
-            this.lbTurn.Text = "Your Turn";
-            this.lbTurn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbTime
             // 
@@ -84,7 +71,7 @@ namespace OmokProgram
             // 
             // hourGlassWrapper
             // 
-            this.hourGlassWrapper.BackgroundImage = global::OmokProgram.Properties.Resources.hourGlass;
+            this.hourGlassWrapper.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("hourGlassWrapper.BackgroundImage")));
             this.hourGlassWrapper.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.hourGlassWrapper.Enabled = false;
             this.hourGlassWrapper.Location = new System.Drawing.Point(543, 300);
@@ -126,24 +113,6 @@ namespace OmokProgram
             this.btnSurrender.Text = "기권";
             this.btnSurrender.UseVisualStyleBackColor = false;
             this.btnSurrender.Click += new System.EventHandler(this.btnSurrender_Click);
-            // 
-            // btnReplay
-            // 
-            this.btnReplay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(234)))), ((int)(((byte)(206)))));
-            this.btnReplay.CausesValidation = false;
-            this.btnReplay.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnReplay.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.btnReplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReplay.Font = new System.Drawing.Font("휴먼둥근헤드라인", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnReplay.Location = new System.Drawing.Point(532, 210);
-            this.btnReplay.Margin = new System.Windows.Forms.Padding(0);
-            this.btnReplay.Name = "btnReplay";
-            this.btnReplay.Size = new System.Drawing.Size(140, 52);
-            this.btnReplay.TabIndex = 11;
-            this.btnReplay.Text = "다시하기";
-            this.btnReplay.UseVisualStyleBackColor = false;
-            this.btnReplay.Visible = false;
-            this.btnReplay.Click += new System.EventHandler(this.btnReplay_Click);
             // 
             // timer
             // 
@@ -221,6 +190,37 @@ namespace OmokProgram
             this.btnClose.Visible = false;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // lbTurn
+            // 
+            this.lbTurn.BackColor = System.Drawing.Color.White;
+            this.lbTurn.Cursor = System.Windows.Forms.Cursors.Default;
+            this.lbTurn.Font = new System.Drawing.Font("나눔고딕", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbTurn.Location = new System.Drawing.Point(532, 216);
+            this.lbTurn.Name = "lbTurn";
+            this.lbTurn.Padding = new System.Windows.Forms.Padding(20, 10, 20, 10);
+            this.lbTurn.Size = new System.Drawing.Size(140, 40);
+            this.lbTurn.TabIndex = 6;
+            this.lbTurn.Text = "Your Turn";
+            this.lbTurn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnReplay
+            // 
+            this.btnReplay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(234)))), ((int)(((byte)(206)))));
+            this.btnReplay.CausesValidation = false;
+            this.btnReplay.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnReplay.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnReplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReplay.Font = new System.Drawing.Font("휴먼둥근헤드라인", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnReplay.Location = new System.Drawing.Point(532, 210);
+            this.btnReplay.Margin = new System.Windows.Forms.Padding(0);
+            this.btnReplay.Name = "btnReplay";
+            this.btnReplay.Size = new System.Drawing.Size(140, 52);
+            this.btnReplay.TabIndex = 11;
+            this.btnReplay.Text = "다시하기";
+            this.btnReplay.UseVisualStyleBackColor = false;
+            this.btnReplay.Visible = false;
+            this.btnReplay.Click += new System.EventHandler(this.btnReplay_Click);
+            // 
             // SinglePlayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -253,15 +253,15 @@ namespace OmokProgram
         private pnBg pnBg;
         private pnInRight pnInRight;
         private System.Windows.Forms.Panel pnShowColor;
-        private System.Windows.Forms.Label lbTurn;
         private System.Windows.Forms.Label lbTime;
         private System.Windows.Forms.Button hourGlassWrapper;
         private System.Windows.Forms.Button btnPut;
         private System.Windows.Forms.Button btnSurrender;
-        private System.Windows.Forms.Button btnReplay;
         private System.Windows.Forms.Timer timer;
         private pnBoard pnBoard;
         private System.Windows.Forms.Label lbResult;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Label lbTurn;
+        private System.Windows.Forms.Button btnReplay;
     }
 }

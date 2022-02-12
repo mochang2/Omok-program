@@ -30,6 +30,7 @@ namespace OmokProgram
     public partial class pnBoard : UserControl
     {
         // draw omok board
+        private bool mounted = false;
         public int margin = 20;
         public int lineCnt = 15;
         public int gridSize = 25;
@@ -43,7 +44,7 @@ namespace OmokProgram
         public STONE [,] board = new STONE [15, 15]; // 0: none, 1: black, 2: white  // (x,y)
         public Graphics g;
         public Pen pen;
-        public Brush wBrush, bBrush, rBrush;
+        public Brush wBrush, bBrush, rBrush, boardBrush;
         public Font seqFont = new Font("맑은 고딕", 9);
         public int stoneCnt = 0;
         public List<SEQUENCE_DATA> gameSeq = new List<SEQUENCE_DATA>();
@@ -58,19 +59,25 @@ namespace OmokProgram
             bBrush = new SolidBrush(Color.Black);
             wBrush = new SolidBrush(Color.White);
             rBrush = new SolidBrush(Color.Red);
+            boardBrush = new SolidBrush(Color.FromArgb(255, (byte)203, (byte)188, (byte)107));
         }
         private void pnGameBoard_Paint(object sender, PaintEventArgs e)
         {
             g = pnGameBoard.CreateGraphics();
-            drawBoard();
+            if (!mounted)
+            {
+                mounted = true;
+                drawBoard();
+            }
             if (formMinimized)
             {
+                drawBoard();
                 drawStone(); 
                 formMinimized = false;
             }
             // sequence 저장 List 사용
         }
-        private void drawBoard()
+        public void drawBoard()
         {
             for (int i = 0; i < lineCnt; i++) // 세로선
             {
@@ -99,7 +106,7 @@ namespace OmokProgram
                 }
             }
         }
-        private void drawStone()
+        public void drawStone()
         {
             for (int x = 0; x < lineCnt; x++)
             {
@@ -154,31 +161,5 @@ namespace OmokProgram
                                                     margin + gridSize * axis[1] - selectSize / 2);
             }
         }
-
-        //private int[] GetRowColIndex(TableLayoutPanel tlp, Point point)
-        //{
-        //    //axis = GetRowColIndex(this.tableLayoutPanel,
-        //    //  this.tableLayoutPanel.PointToClient(Cursor.Position));
-        //    if (point.X > tlp.Width || point.Y > tlp.Height)
-        //        return new int[] { -1, -1 };
-
-        //    int w = tlp.Width;
-        //    int h = tlp.Height;
-        //    int[] widths = tlp.GetColumnWidths();
-
-        //    int i;
-        //    for (i = widths.Length - 1; i >= 0 && point.X < w; i--)
-        //        w -= widths[i];
-        //    int col = i + 1;
-
-        //    int[] heights = tlp.GetRowHeights();
-        //    for (i = heights.Length - 1; i >= 0 && point.Y < h; i--)
-        //        h -= heights[i];
-
-        //    int row = i + 1;
-
-        //    return new int[] { col, row };
-        //}
-
     }
 }
