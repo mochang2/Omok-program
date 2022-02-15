@@ -101,8 +101,9 @@ namespace OmokProgram
                 if (myColor == turn) // 내턴
                 {
                     Console.WriteLine("my turn");
-                    //pnBoard.axis = algorithm.omokAI(pnBoard.board); // ai algorithm
-                    pnBoard.axis = algorithm.fastAI(pnBoard.board, pnBoard.stoneCnt);
+                    if (pnBoard.stoneCnt == 0) pnBoard.axis = new int[2] { 7, 7 }; // 선공이면 중앙에 두기
+                    else pnBoard.axis = algorithm.fastAI(pnBoard.board, pnBoard.stoneCnt);
+                    //pnBoard.axis = algorithm.miniMaxAI(pnBoard.board, myColor, pnBoard.stoneCnt);
                     Console.WriteLine("x: {0}, y: {1} 결정", pnBoard.axis[0], pnBoard.axis[1]);
 
                     protocol.command = (byte)3;
@@ -116,22 +117,22 @@ namespace OmokProgram
                         MessageBox.Show("서버로부터 연결이 끊어졌습니다.");
                     }
 
-                    drawStone();
-                    drawForbidden();
-                    addTextToTbSeq();
-                    turn = myColor == STONE.black ? STONE.white : STONE.black;
-                    showTurn();
-
                     try
                     {
                         stream.Read(buffer, 0, protocolSize); // 내 턴 update receive
+
+                        drawStone();
+                        drawForbidden();
+                        addTextToTbSeq();
+                        turn = myColor == STONE.black ? STONE.white : STONE.black;
+                        showTurn();
                     }
                     catch (System.IO.IOException)
                     {
                         MessageBox.Show("서버로부터 연결이 끊어졌습니다.");
                     }
                 }
-                
+
                 // 상대방 턴
                 if (buffer[0] != 4) // 내 턴에 이긴거로 끝난게 receive -> update
                 {
@@ -170,8 +171,12 @@ namespace OmokProgram
             stream.Close();
             client.Close();
             Console.WriteLine("play finished!");
-            showFinishScreen();
-            if (buffer[2] != (byte)0 && buffer[2] != (byte)1) showFinishReason();
+            if (buffer[2] != (byte)0 && buffer[2] != (byte)1)
+            {
+                showFinishReason();
+                showFinishScreen();
+            }
+            else showFinishScreen();
         }
         private void drawStone()
         {

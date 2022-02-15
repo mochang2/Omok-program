@@ -42,6 +42,7 @@ namespace OmokProgram
         {
             closeProgram = false;
             singlePlayForm.playerColor = rbBlack.Checked ? STONE.black : STONE.white;
+            singlePlayForm.AIColor = rbBlack.Checked ? STONE.white : STONE.black;
             Close();
             singlePlayForm.Show();
         }

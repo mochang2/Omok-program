@@ -25,6 +25,7 @@ namespace OmokProgram
 
         // game
         public STONE playerColor;
+        public STONE AIColor;
         private STONE turn = STONE.black;
         private STONE winner;
         private Graphics g;
@@ -118,13 +119,13 @@ namespace OmokProgram
                         break;
                     }
                     winner = algorithm.checkOmok
-                        (pnBoard.board, pnBoard.axis[0], pnBoard.axis[1],turn);
+                        (pnBoard.board, pnBoard.axis[0], pnBoard.axis[1], turn);
                     if (winner != STONE.none)
                     {
                         playing = false;
                         break;
                     }
-                    turn = playerColor == STONE.black ? STONE.white : STONE.black;
+                    turn = AIColor;
 
                     Console.WriteLine("player finished");
                 }
@@ -136,7 +137,7 @@ namespace OmokProgram
                     changelbTurnText("Com's Turn");
                     try  // 기권에 대한 예외처리(thread.Interrupt())
                     {
-                        pnBoard.axis = algorithm.omokAI(pnBoard.board);
+                        pnBoard.axis = algorithm.miniMaxAI(pnBoard.board, AIColor, pnBoard.stoneCnt);
                     }
                     catch (ThreadInterruptedException ex)
                     {
@@ -152,7 +153,7 @@ namespace OmokProgram
                         playing = false;
                         break;
                     }
-                    turn = playerColor == STONE.black ? STONE.black : STONE.white;
+                    turn = playerColor;
 
                     Console.WriteLine("computer finished");
                 }
@@ -345,7 +346,7 @@ namespace OmokProgram
         }
         private void btnSurrender_Click(object sender, EventArgs e)
         {
-            winner = playerColor == STONE.black ? STONE.white : STONE.black;
+            winner = AIColor;
             gameThread.Interrupt();
         }
 

@@ -10,129 +10,104 @@ namespace OmokProgram
 {
     class Algorithm
     {
-        // ↑, ↗, →, ↘, ↓, ↙, ←, ↖  
-        private readonly int[] dx = new int[] { 0, 1, 1, 1, 0, -1, -1, -1 };
-        private readonly int[] dy = new int[] { -1, -1, 0, 1, 1, 1, 0, -1 };
         private readonly int lineCnt = 15;
         private int x;
         private int y;
-        private STONE[,] board;
-        
+        private STONE[,] board;    // 바둑판
+
 
         public bool checkForbidden(int x, int y, STONE[,] board)
         {
+            this.x = x;
+            this.y = y;
             this.board = board;
             this.board[x, y] = STONE.black;  // 해당 빈 공간이 검정돌일 때를 가정
 
             List<Point> axisList = checkOpenDir1(x, y);
             if (axisList.Count == 3) // 33 check
             {
-                foreach (Point p in axisList)
+                if ((checkOpenDir2(x, y).Count == 3) ||
+                    (checkOpenDir3(x, y).Count == 3) ||
+                    (checkOpenDir4(x, y).Count == 3))
                 {
-                    if ((checkOpenDir2(p.X, p.Y).Count == 3) ||
-                        (checkOpenDir3(p.X, p.Y).Count == 3) ||
-                        (checkOpenDir4(p.X, p.Y).Count == 3))
-                    {
-                        this.board[x, y] = STONE.none;
-                        return true;
-                    }
+                    this.board[x, y] = STONE.none;
+                    return true;
                 }
             }
             else if (axisList.Count == 4) // 44 check
             {
-                foreach (Point p in axisList)
+                if ((checkOpenDir2(x, y).Count == 4) ||
+                    (checkOpenDir3(x, y).Count == 4) ||
+                    (checkOpenDir4(x, y).Count == 4))
                 {
-                    if ((checkOpenDir2(p.X, p.Y).Count == 4) ||
-                        (checkOpenDir3(p.X, p.Y).Count == 4) ||
-                        (checkOpenDir4(p.X, p.Y).Count == 4))
-                    {
-                        this.board[x, y] = STONE.none;
-                        return true;
-                    }
+                    this.board[x, y] = STONE.none;
+                    return true;
                 }
             }
 
             axisList = checkOpenDir2(x, y);
             if (axisList.Count == 3) // 33 check
             {
-                foreach (Point p in axisList)
+                if ((checkOpenDir1(x, y).Count == 3) ||
+                    (checkOpenDir3(x, y).Count == 3) ||
+                    (checkOpenDir4(x, y).Count == 3))
                 {
-                    if ((checkOpenDir1(p.X, p.Y).Count == 3) ||
-                        (checkOpenDir3(p.X, p.Y).Count == 3) ||
-                        (checkOpenDir4(p.X, p.Y).Count == 3))
-                    {
-                        this.board[x, y] = STONE.none;
-                        return true;
-                    }
+                    this.board[x, y] = STONE.none;
+                    return true;
                 }
             }
             else if (axisList.Count == 4) // 44 check
             {
-                foreach (Point p in axisList)
+                if ((checkOpenDir1(x, y).Count == 4) ||
+                    (checkOpenDir3(x, y).Count == 4) ||
+                    (checkOpenDir4(x, y).Count == 4))
                 {
-                    if ((checkOpenDir1(p.X, p.Y).Count == 4) ||
-                        (checkOpenDir3(p.X, p.Y).Count == 4) ||
-                        (checkOpenDir4(p.X, p.Y).Count == 4))
-                    {
-                        this.board[x, y] = STONE.none;
-                        return true;
-                    }
+                    this.board[x, y] = STONE.none;
+                    return true;
                 }
             }
 
             axisList = checkOpenDir3(x, y);
             if (axisList.Count == 3) // 33 check
             {
-                foreach (Point p in axisList)
+                if ((checkOpenDir1(x, y).Count == 3) ||
+                    (checkOpenDir2(x, y).Count == 3) ||
+                    (checkOpenDir4(x, y).Count == 3))
                 {
-                    if ((checkOpenDir1(p.X, p.Y).Count == 3) ||
-                        (checkOpenDir2(p.X, p.Y).Count == 3) ||
-                        (checkOpenDir4(p.X, p.Y).Count == 3))
-                    {
-                        this.board[x, y] = STONE.none;
-                        return true;
-                    }
+                    this.board[x, y] = STONE.none;
+                    return true;
                 }
             }
             else if (axisList.Count == 4) // 44 check
             {
-                foreach (Point p in axisList)
+                if ((checkOpenDir1(x, y).Count == 4) ||
+                    (checkOpenDir2(x, y).Count == 4) ||
+                    (checkOpenDir4(x, y).Count == 4))
                 {
-                    if ((checkOpenDir1(p.X, p.Y).Count == 4) ||
-                        (checkOpenDir2(p.X, p.Y).Count == 4) ||
-                        (checkOpenDir4(p.X, p.Y).Count == 4))
-                    {
-                        this.board[x, y] = STONE.none;
-                        return true;
-                    }
+                    this.board[x, y] = STONE.none;
+                    return true;
                 }
             }
 
             axisList = checkOpenDir4(x, y);
             if (axisList.Count == 3) // 33 check
             {
-                foreach (Point p in axisList)
+                if ((checkOpenDir1(x, y).Count == 3) ||
+                    (checkOpenDir2(x, y).Count == 3) ||
+                    (checkOpenDir3(x, y).Count == 3))
                 {
-                    if ((checkOpenDir1(p.X, p.Y).Count == 3) ||
-                        (checkOpenDir2(p.X, p.Y).Count == 3) ||
-                        (checkOpenDir3(p.X, p.Y).Count == 3))
-                    {
-                        this.board[x, y] = STONE.none;
-                        return true;
-                    }
+                    this.board[x, y] = STONE.none;
+                    return true;
                 }
             }
             else if (axisList.Count == 4) // 44 check
             {
-                foreach (Point p in axisList)
+                if ((checkOpenDir1(x, y).Count == 4) ||
+                    (checkOpenDir2(x, y).Count == 4) ||
+                    (checkOpenDir3(x, y).Count == 4))
                 {
-                    if ((checkOpenDir1(p.X, p.Y).Count == 4) ||
-                        (checkOpenDir2(p.X, p.Y).Count == 4) ||
-                        (checkOpenDir3(p.X, p.Y).Count == 4))
-                    {
-                        this.board[x, y] = STONE.none;
-                        return true;
-                    }
+                    this.board[x, y] = STONE.none;
+                    return true;
                 }
             }
 
@@ -160,84 +135,60 @@ namespace OmokProgram
                         //Console.WriteLine("가로 방향 axisList count {0}", axisList.Count);
                         if (axisList.Count == 3) // 33 check
                         {
-                            foreach(Point p in axisList)
-                            {
-                                if (checkOpenDir2(p.X, p.Y).Count == 3) return STONE.white; // 흑이 금수를 둠
-                                if (checkOpenDir3(p.X, p.Y).Count == 3) return STONE.white;
-                                if (checkOpenDir4(p.X, p.Y).Count == 3) return STONE.white;
-                            }
+                            if (checkOpenDir2(x, y).Count == 3) return STONE.white; // 흑이 금수를 둠
+                            if (checkOpenDir3(x, y).Count == 3) return STONE.white;
+                            if (checkOpenDir4(x, y).Count == 3) return STONE.white;
                         }
                         else if (axisList.Count == 4) // 44 check
                         {
-                            foreach (Point p in axisList)
-                            {
-                                if (checkOpenDir2(p.X, p.Y).Count == 4) return STONE.white; // 흑이 금수를 둠
-                                if (checkOpenDir3(p.X, p.Y).Count == 4) return STONE.white;
-                                if (checkOpenDir4(p.X, p.Y).Count == 4) return STONE.white;
-                            }
+                            if (checkOpenDir2(x, y).Count == 4) return STONE.white; // 흑이 금수를 둠
+                            if (checkOpenDir3(x, y).Count == 4) return STONE.white;
+                            if (checkOpenDir4(x, y).Count == 4) return STONE.white;
                         }
 
                         axisList = checkOpenDir2(x, y);
                         //Console.WriteLine("세로 방향 axisList count {0}", axisList.Count);
                         if (axisList.Count == 3) // 33 check
                         {
-                            foreach (Point p in axisList)
-                            {
-                                if (checkOpenDir1(p.X, p.Y).Count == 3) return STONE.white; // 흑이 금수를 둠
-                                if (checkOpenDir3(p.X, p.Y).Count == 3) return STONE.white;
-                                if (checkOpenDir4(p.X, p.Y).Count == 3) return STONE.white;
-                            }
+                            if (checkOpenDir1(x, y).Count == 3) return STONE.white; // 흑이 금수를 둠
+                            if (checkOpenDir3(x, y).Count == 3) return STONE.white;
+                            if (checkOpenDir4(x, y).Count == 3) return STONE.white;
                         }
                         else if (axisList.Count == 4) // 44 check
                         {
-                            foreach (Point p in axisList)
-                            {
-                                if (checkOpenDir1(p.X, p.Y).Count == 4) return STONE.white; // 흑이 금수를 둠
-                                if (checkOpenDir3(p.X, p.Y).Count == 4) return STONE.white;
-                                if (checkOpenDir4(p.X, p.Y).Count == 4) return STONE.white;
-                            }
+                            if (checkOpenDir1(x, y).Count == 4) return STONE.white; // 흑이 금수를 둠
+                            if (checkOpenDir3(x, y).Count == 4) return STONE.white;
+                            if (checkOpenDir4(x, y).Count == 4) return STONE.white;
                         }
 
                         axisList = checkOpenDir3(x, y);
                         //Console.WriteLine("대각1 방향 axisList count {0}", axisList.Count);
                         if (axisList.Count == 3) // 33 check
                         {
-                            foreach(Point p in axisList)
-                            {
-                                if (checkOpenDir1(p.X, p.Y).Count == 3) return STONE.white; // 흑이 금수를 둠
-                                if (checkOpenDir2(p.X, p.Y).Count == 3) return STONE.white;
-                                if (checkOpenDir4(p.X, p.Y).Count == 3) return STONE.white;
-                            }
+                            if (checkOpenDir1(x, y).Count == 3) return STONE.white; // 흑이 금수를 둠
+                            if (checkOpenDir2(x, y).Count == 3) return STONE.white;
+                            if (checkOpenDir4(x, y).Count == 3) return STONE.white;
                         }
                         else if (axisList.Count == 4) // 44 check
                         {
-                            foreach (Point p in axisList)
-                            {
-                                if (checkOpenDir1(p.X, p.Y).Count == 4) return STONE.white; // 흑이 금수를 둠
-                                if (checkOpenDir2(p.X, p.Y).Count == 4) return STONE.white;
-                                if (checkOpenDir4(p.X, p.Y).Count == 4) return STONE.white;
-                            }
+                            if (checkOpenDir1(x, y).Count == 4) return STONE.white; // 흑이 금수를 둠
+                            if (checkOpenDir2(x, y).Count == 4) return STONE.white;
+                            if (checkOpenDir4(x, y).Count == 4) return STONE.white;
                         }
 
                         axisList = checkOpenDir4(x, y);
                         //Console.WriteLine("대각2 방향 axisList count {0}", axisList.Count);
                         if (axisList.Count == 3) // 33 check
                         {
-                            foreach (Point p in axisList)
-                            {
-                                if (checkOpenDir1(p.X, p.Y).Count == 3) return STONE.white; // 흑이 금수를 둠
-                                if (checkOpenDir2(p.X, p.Y).Count == 3) return STONE.white;
-                                if (checkOpenDir3(p.X, p.Y).Count == 3) return STONE.white;
-                            }
+                            if (checkOpenDir1(x, y).Count == 3) return STONE.white; // 흑이 금수를 둠
+                            if (checkOpenDir2(x, y).Count == 3) return STONE.white;
+                            if (checkOpenDir3(x, y).Count == 3) return STONE.white;
                         }
                         else if (axisList.Count == 4) // 44 check
                         {
-                            foreach (Point p in axisList)
-                            {
-                                if (checkOpenDir1(p.X, p.Y).Count == 4) return STONE.white; // 흑이 금수를 둠
-                                if (checkOpenDir2(p.X, p.Y).Count == 4) return STONE.white;
-                                if (checkOpenDir3(p.X, p.Y).Count == 4) return STONE.white;
-                            }
+                            if (checkOpenDir1(x, y).Count == 4) return STONE.white; // 흑이 금수를 둠
+                            if (checkOpenDir2(x, y).Count == 4) return STONE.white;
+                            if (checkOpenDir3(x, y).Count == 4) return STONE.white;
                         }
                     }
 
@@ -303,6 +254,7 @@ namespace OmokProgram
 
             return new List<Point>();
         }
+
 
         // 해당 좌표를 기준으로, 각 방향으로 열렸는지 확인
         // 가장자리에 대한 예외처리: 가장자리에 돌이 있다면 닫혀있는 것
@@ -401,6 +353,172 @@ namespace OmokProgram
                 (j == lineCnt - 1 && board[j, i] != STONE.none)) return new List<Point>();
 
             return tempList;
+        }
+
+        // 해당 위치에 두면 각 방향으로 몇 개가 이어졌는지 / 열렸는지 / 한 칸 띄었는지
+        private WeightInfo checkDir1(int x, int y, STONE color) // 가로: → => ← 연결된 돌의 수 확인
+        {
+            int connectCnt = 1;
+            int closedCnt = 0;
+            bool jump = false;
+            int j;
+            for (j = x + 1; j < lineCnt; j++)
+            {
+                if (board[j, y] == color) connectCnt++;  // 같은 색일 때
+                else if (board[j, y] != color && board[j, y] != STONE.none)  // 다른 색일 때
+                {
+                    closedCnt++;
+                    break;
+                }
+                else if (board[j, y] == STONE.none && jump == true) break;  // 빈 칸 일 때1.
+                else  // 빈 칸 일 때2  /*(board[j, y] == STONE.none && jump == false)*/
+                {
+                    if (j + 1 < lineCnt && board[j + 1, y] == color) jump = true;  // 점프해서 다시 내 색깔일 때
+                    else break;
+                }
+            }
+            if (j == lineCnt) closedCnt++;
+            for (j = x - 1; j >= 0; j--)
+            {
+                if (board[j, y] == color) connectCnt++;  // 같은 색일 때
+                else if (board[j, y] != color && board[j, y] != STONE.none)  // 다른 색일 때
+                {
+                    closedCnt++;
+                    break;
+                }
+                else if (board[j, y] == STONE.none && jump == true) break;  // 빈 칸 일 때1
+                else  // 빈 칸 일 때2  /*(board[j, y] == STONE.none && jump == false)*/
+                {
+                    if (j - 1 >= 0 && board[j - 1, y] == color) jump = true;  // 점프해서 다시 내 색깔일 때
+                    else break;
+                }
+            }
+            if (j == -1) closedCnt++;
+
+            return new WeightInfo(connectCnt, closedCnt, jump);
+        }
+        private WeightInfo checkDir2(int x, int y, STONE color) // 세로: ↑ => ↓ 연결된 돌의 수 확인
+        {
+            int connectCnt = 1;
+            int closedCnt = 0;
+            bool jump = false;
+            int i;
+            for (i = y - 1; i >= 0; i--)
+            {
+                if (board[x, i] == color) connectCnt++;  // 같은 색일 때
+                else if (board[x, i] != color && board[x, i] != STONE.none) // 다른 색일 때
+                {
+                    closedCnt++;
+                    break;
+                }
+                else if (board[x, i] == STONE.none && jump == true) break;  // 빈 칸 일 때1
+                else  // 빈 칸 일 때2 /*(board[x, i] == STONE.none && jump == false)*/
+                {
+                    if (i - 1 >= 0 && board[x, i - 1] == color) jump = true;  // 점프해서 다시 내 색깔일 때
+                    else break;
+                }
+            }
+            if (i == -1) closedCnt++;
+            for (i = y + 1; i < lineCnt; i++)
+            {
+                if (board[x, i] == color) connectCnt++;  // 같은 색일 때
+                else if (board[x, i] != color && board[x, i] != STONE.none)  // 다른 색일 때
+                {
+                    closedCnt++;
+                    break;
+                }
+                else if (board[x, i] == STONE.none && jump == true) break;  // 빈 칸 일 때1
+                else  // 빈 칸 일 때2 /*(board[x, i] == STONE.none && jump == false)*/ 
+                {
+                    if (i + 1 < lineCnt && board[x, i + 1] == color) jump = true;  // 점프해서 다시 내 색깔일 때
+                    else break;
+                }
+            }
+            if (i == lineCnt) closedCnt++;
+
+            return new WeightInfo(connectCnt, closedCnt, jump);
+        }
+        private WeightInfo checkDir3(int x, int y, STONE color) // 대각선1: ↗ => ↙ 연결된 돌의 수 확인
+        {
+            int connectCnt = 1;
+            int closedCnt = 0;
+            bool jump = false;
+            int i, j;
+            for (i = y - 1, j = x + 1; i >= 0 && j < lineCnt; i--, j++)
+            {
+                if (board[j, i] == color) connectCnt++;  // 같은 색일 때
+                else if (board[j, i] != color && board[j, i] != STONE.none)  // 다른 색일 때
+                {
+                    closedCnt++;
+                    break;
+                }
+                else if (board[j, i] == STONE.none && jump == true) break;  // 빈 칸 일 때1
+                else  // 빈 칸 일 때2 /*(board[j, i] == STONE.none && jump == false)*/
+                {
+                    if (i - 1 >= 0 && j + 1 < lineCnt && board[j + 1, i - 1] == color) jump = true;  // 점프해서 다시 내 색깔일 때
+                    else break;
+                }
+            }
+            if (i == -1 || j == lineCnt) closedCnt++;
+            for (i = y + 1, j = x - 1; i < lineCnt && j >= 0; i++, j--)
+            {
+                if (board[j, i] == color) connectCnt++;  // 같은 색일 때
+                else if (board[j, i] != color && board[j, i] != STONE.none)  // 다른 색일 때
+                {
+                    closedCnt++;
+                    break;
+                }
+                else if (board[j, i] == STONE.none && jump == true) break;  // 빈 칸 일 때1
+                else  // 빈 칸 일 때2 /*(board[j, i] == STONE.none && jump == false)*/
+                {
+                    if (i + 1 < lineCnt && j - 1 >= 0 && board[j - 1, i + 1] == color) jump = true;  // 점프해서 다시 내 색깔일 때
+                    else break;
+                }
+            }
+            if (i == lineCnt || j == -1) closedCnt++;
+
+            return new WeightInfo(connectCnt, closedCnt, jump);
+        }
+        private WeightInfo checkDir4(int x, int y, STONE color) //  대각선2: ↖ =>↘  연결된 돌의 수 확인
+        {
+            int connectCnt = 1;
+            int closedCnt = 0;
+            bool jump = false;
+            int i, j;
+            for (i = y - 1, j = x - 1; i >= 0 && j >= 0; i--, j--)
+            {
+                if (board[j, i] == color) connectCnt++;  // 같은 색일 때
+                else if (board[j, i] != color && board[j, i] != STONE.none)  // 다른 색일 때
+                {
+                    closedCnt++;
+                    break;
+                }
+                else if (board[j, i] == STONE.none && jump == true) break;  // 빈 칸 일 때1
+                else  // 빈 칸 일 때2 /*(board[j, i] == STONE.none && jump == false)*/
+                {
+                    if (i - 1 >= 0 && j - 1 >= 0 && board[j - 1, i - 1] == color) jump = true;  // 점프해서 다시 내 색깔일 때
+                    else break;
+                }
+            }
+            if (i == -1 || j == -1) closedCnt++;
+            for (i = y + 1, j = x + 1; i < lineCnt && j < lineCnt; i++, j++)
+            {
+                if (board[j, i] == color) connectCnt++;  // 같은 색일 때
+                else if (board[j, i] != color && board[j, i] != STONE.none)  // 다른 색일 때
+                {
+                    closedCnt++;
+                    break;
+                }
+                else if (board[j, i] == STONE.none && jump == true) break;  // 빈 칸 일 때1
+                else  // 빈 칸 일 때2 /*(board[j, i] == STONE.none && jump == false)*/
+                {
+                    if (i + 1 < lineCnt && j + 1 < lineCnt && board[j + 1, i + 1] == color) jump = true;  // 점프해서 다시 내 색깔일 때
+                    else break;
+                }
+            }
+            if (i == lineCnt || j == lineCnt) closedCnt++;
+
+            return new WeightInfo(connectCnt, closedCnt, jump);
         }
 
         // 각 방향으로 이겼는지 확인. int 반환(개수)
@@ -536,10 +654,357 @@ namespace OmokProgram
         }
 
 
-        // AI 알고리즘. return Point or int[2] (X, Y)
-        public int[] omokAI(STONE[,] board)
+        private int cmpFunc(WeightInfo a, WeightInfo b)
         {
-            // need minimax
+            if (a.connectCnt > b.connectCnt) return -1;
+            else if (a.connectCnt < b.connectCnt) return 1;
+            else
+            {
+                if (a.closedCnt < b.closedCnt) return -1;
+                else if (a.closedCnt > b.closedCnt) return 11;
+                else return 0;
+            }
+        }
+
+
+        private bool calcBlackWeight(int[,] w_board, int j, int i, STONE stone)
+        {
+            int c5 = 0;  // connect - closed - jump
+            int c4C0F = 0;
+            int c4C1F = 0;
+            int c4C0T = 0;
+            int c4C1T = 0;
+            int c3C0F = 0;
+            int c3C1F = 0;
+            int c3C0T = 0;
+            int c3C1T = 0;
+            int c2C0F = 0;
+            int c2C1F = 0;
+            int c2C0T = 0;
+            int c2C1T = 0;
+
+            List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
+            li.Add(checkDir1(j, i, stone));
+            li.Add(checkDir2(j, i, stone));
+            li.Add(checkDir3(j, i, stone));
+            li.Add(checkDir4(j, i, stone));
+            foreach (WeightInfo wi in li)
+            {
+                if (wi.connectCnt == 5 && wi.jump == false) c5++;
+                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == false) c4C0F++;
+                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == false) c4C1F++;
+                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == true) c4C0T++;
+                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == true) c4C1T++;
+                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == false) c3C0F++;
+                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == false) c3C1F++;
+                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == true) c3C0T++;
+                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == true) c3C1T++;
+                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == false) c2C0F++;
+                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == false) c2C1F++;
+                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == true) c2C0T++;
+                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == true) c2C1T++;
+            }
+
+            // 필승카드
+            if (c5 >= 1)  // 5목  // 11, 3확인
+            {
+                w_board[j, i] = (int)Weight.Gameover;
+                return true;
+            }
+            else if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
+            {
+                w_board[j, i] = (int)Weight.NextOver;
+                return true;
+            }
+            else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린 3
+            {
+                w_board[j, i] = (int)Weight.NextOver;
+                return true;
+            }
+
+            // 가중치 합 필요
+            if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
+                (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
+            {
+                w_board[j, i] += (int)Weight.NoVictory43;
+            }
+            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
+            {
+                w_board[j, i] += (int)Weight.OpenJump4;
+            }
+            if (c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1)  // 열린 32
+            {
+                w_board[j, i] += (int)Weight.Open32;
+            }
+            if (c2C0T + c2C0F >= 3)  // 열린 222
+            {
+                w_board[j, i] += (int)Weight.Open222;
+            }
+            if (c3C0F == 1)  // 이어진, 열린 3
+            {
+                w_board[j, i] += (int)Weight.OpenNojump3;
+            }
+            if (c3C0T == 1)  // 한 칸 띄어진, 열린 3
+            {
+                w_board[j, i] += (int)Weight.OpenJump3;
+            }
+            if (c4C1F == 1)  // 이어진, 닫힌 4
+            {
+                w_board[j, i] += (int)Weight.ClosedNojump4;
+            }
+            if (c4C1T == 1)  // 띄어진, 닫힌 4
+            {
+                w_board[j, i] += (int)Weight.ClosedJump4;
+            }
+            if (c3C1T == 1)  // 띄어진, 닫힌 3
+            {
+                w_board[j, i] += (int)Weight.ClosedJump3;
+            }
+            if (c3C1F == 1)  // 이어진, 닫힌 3
+            {
+                w_board[j, i] += (int)Weight.ClosedNojump3;
+            }
+            if (c2C0F + c2C0T == 1)  // 열린 2
+            {
+                w_board[j, i] += (int)Weight.Open2;
+            }
+            if (c2C1F + c2C1T == 1)  // 닫힌 2
+            {
+                w_board[j, i] += (int)Weight.Closed2;
+            }
+
+            return false;
+        }
+
+
+        private bool calcWhiteWeight(int[,] w_board, int j, int i, STONE stone)
+        {
+            int c5F = 0;  // connect - closed - jump
+            int c5C0T = 0;  // 가중치 임의로 넣음
+            int c5C1T = 0;  // 가중치 임의로 넣음
+            int c5C2T = 0;  // 가중치 임의로 넣음
+            int c4C0F = 0;
+            int c4C1F = 0;
+            int c4C0T = 0;
+            int c4C1T = 0;
+            int c3C0F = 0;
+            int c3C1F = 0;
+            int c3C0T = 0;
+            int c3C1T = 0;
+            int c2C0F = 0;
+            int c2C1F = 0;
+            int c2C0T = 0;
+            int c2C1T = 0;
+
+
+            List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
+            li.Add(checkDir1(j, i, stone));
+            li.Add(checkDir2(j, i, stone));
+            li.Add(checkDir3(j, i, stone));
+            li.Add(checkDir4(j, i, stone));
+
+            foreach (WeightInfo wi in li)
+            {
+                if (wi.connectCnt >= 5 && wi.jump == false) c5F++;
+                else if (wi.connectCnt >= 5 && wi.closedCnt == 0) c5C0T++;
+                else if (wi.connectCnt >= 5 && wi.closedCnt == 1) c5C1T++;
+                else if (wi.connectCnt >= 5 && wi.closedCnt == 2) c5C2T++;
+                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == false) c4C0F++;
+                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == false) c4C1F++;
+                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == true) c4C0T++;
+                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == true) c4C1T++;
+                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == false) c3C0F++;
+                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == false) c3C1F++;
+                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == true) c3C0T++;
+                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == true) c3C1T++;
+                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == false) c2C0F++;
+                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == false) c2C1F++;
+                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == true) c2C0T++;
+                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == true) c2C1T++;
+            }
+
+            // 필승 카드
+            if (c5F >= 1)  // 5목 + 장목
+            {
+                w_board[j, i] = (int)Weight.Gameover;
+                return true;
+            }
+            else if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
+            {
+                w_board[j, i] = (int)Weight.NextOver;
+                return true;
+            }
+            else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린3
+            {
+                w_board[j, i] = (int)Weight.NextOver;
+                return true;
+            }
+            else if (c3C0F + c3C0T >= 2)  // 열린 3이 2 개 이상
+            {
+                w_board[j, i] = (int)Weight.NextOver;
+                return true;
+            }
+
+            // 가중치 합 필요
+            // 가중치 합 필요
+            if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
+                (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
+            {
+                w_board[j, i] += (int)Weight.NoVictory43;
+            }
+            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
+            {
+                w_board[j, i] += (int)Weight.OpenJump4;
+            }
+            if ((c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1) || c5C0T >= 1)  // 열린 32
+            {
+                w_board[j, i] += (int)Weight.Open32;
+            }
+            if (c2C0T + c2C0F >= 3)  // 열린 222
+            {
+                w_board[j, i] += (int)Weight.Open222;
+            }
+            if (c3C0F == 1)  // 이어진, 열린 3
+            {
+                w_board[j, i] += (int)Weight.OpenNojump3;
+            }
+            if (c3C0T == 1 || c5C1T >= 1)  // 한 칸 띄어진, 열린 3
+            {
+                w_board[j, i] += (int)Weight.OpenJump3;
+            }
+            if (c4C1F == 1 || c5C2T >= 1)  // 이어진, 닫힌 4
+            {
+                w_board[j, i] += (int)Weight.ClosedNojump4;
+            }
+            if (c4C1T == 1)  // 띄어진, 닫힌 4
+            {
+                w_board[j, i] += (int)Weight.ClosedJump4;
+            }
+            if (c3C1T == 1)  // 띄어진, 닫힌 3
+            {
+                w_board[j, i] += (int)Weight.ClosedJump3;
+            }
+            if (c3C1F == 1)  // 이어진, 닫힌 3
+            {
+                w_board[j, i] += (int)Weight.ClosedNojump3;
+            }
+            if (c2C0F + c2C0T == 1)  // 열린 2
+            {
+                w_board[j, i] += (int)Weight.Open2;
+            }
+            if (c2C1F + c2C1T == 1)  // 닫힌 2
+            {
+                w_board[j, i] += (int)Weight.Closed2;
+            }
+
+            return false;
+        }
+
+
+            // 가중치 부여. 내 턴마다 새롭게 가중치판을 생성.
+            public int[,] addWeight(STONE AIColor)
+        {
+            int[,] w_board = new int[lineCnt, lineCnt];  // 가중치판. 0으로 초기화
+            STONE stone = STONE.black;
+            bool gameover = false;  // gameover == true이면 더이상 가중치 계산을 그만함
+
+            switch (AIColor)
+            {
+                case STONE.black:  // 금수 위치 가중치 조정o
+                    // 해당 위치에 자신의 돌, 즉 black을 놓을 때 가중치를 더함
+                    for (int j = 0; j < lineCnt; j++)
+                    {
+                        for (int i = 0; i < lineCnt; i++)
+                        {
+                            if (board[j, i] != STONE.none) continue;
+                            if (j > 0 && j < lineCnt - 1 &&
+                                i > 0 && i < lineCnt - 1 &&
+                                checkForbidden(j, i, board))  // 금수 위치
+                            {
+                                w_board[j, i] = -(int)Weight.Gameover;
+                                continue;
+                            }
+
+                            gameover = calcBlackWeight(w_board, j, i, stone);
+                        }
+                        if (gameover) break;
+                    }
+
+                    // 해당 위치에 상대방 돌, 즉 white를 놓을 때 가중치를 더함
+                    stone = STONE.white;
+                    if (gameover) break;
+                    for (int j = 0; j < lineCnt; j++)
+                    {
+                        for (int i = 0; i < lineCnt; i++)
+                        {
+                            if (board[j, i] != STONE.none || w_board[j,i] < -100000) continue;  // 금수 위치는 절대 고려 x
+
+                            gameover = calcWhiteWeight(w_board, j, i, stone);
+                        }
+                        if (gameover) break;
+                    }
+                    break;
+
+
+                case STONE.white:  // 금수 위치 가중치 조정x. 그냥 내가 유리해지기만 하는지 판단
+                    // 해당 위치에 상대방 돌, 즉 black를 놓을 때 가중치를 더함
+                    for (int j = 0; j < lineCnt; j++)
+                    {
+                        for (int i = 0; i < lineCnt; i++)
+                        {
+                            if (board[j, i] != STONE.none) continue;
+                            if (j > 0 && j < lineCnt - 1 &&
+                                i > 0 && i < lineCnt - 1 && 
+                                checkForbidden(j, i, board)) continue; // black의 금수 위치
+                                                                       // 똑똑한 상대방은  해당 위치에 두지 않는다고 판단
+
+                            gameover = calcBlackWeight(w_board, j, i, stone);
+                        }
+                        if (gameover) break;
+                    }
+
+                    // 해당 위치에 자신의 돌, 즉 white을 놓을 때 가중치를 더함
+                    stone = STONE.white;
+                    if (gameover) break;
+                    for (int j = 0; j < lineCnt; j++)
+                    {
+                        for (int i = 0; i < lineCnt; i++)
+                        {
+                            if (board[j, i] != STONE.none) continue;
+
+                            gameover = calcWhiteWeight(w_board, j, i, stone);
+                        }
+
+                        if (gameover) break;
+                    }
+                    break;
+
+
+                default:  // 에러
+                    Console.WriteLine("데이터가 잘못 전달되었습니다.");
+                    break;
+            }
+
+
+            // print w_board
+            for (int i = 0; i < lineCnt; i++)  // y
+            {
+                for (int j = 0; j < lineCnt; j++)  // x
+                {
+                    Console.Write("{0} ", w_board[j, i]);
+                }
+                Console.Write("\n");
+            }
+            Console.WriteLine();
+
+            return w_board;
+        }
+
+        // AI 알고리즘. return Point or int[2] (X, Y)
+        public int[] randomAI(STONE[,] board)
+        {
+            this.board = board;
+
             Random random = new Random();
             int len = board.GetLength(0);
             int AIx, AIy;
@@ -555,7 +1020,8 @@ namespace OmokProgram
 
         public int[] fastAI(STONE[,] board, int stoneCnt)
         {
-            // need minimax
+            this.board = board;
+
             if (stoneCnt % 2 == 1)
             {
                 Random random = new Random();
@@ -571,32 +1037,213 @@ namespace OmokProgram
                 return new int[2] { AIx, AIy };
             }
             else
-            //for (int j = 0; j < lineCnt; j++)
-            //    for (int i = 0; i < lineCnt; i++)
-            //        if (board[j, i] == STONE.none)
-            //        {
-            //            Thread.Sleep(1000);
-            //            return new int[2] { j, i };
-            //        }
-            {
-                switch (stoneCnt)
-                {
-                    case 0:
-                        return new int[2] { 1, 1 };
-                    case 2:
-                        return new int[2] { 2, 2 };
-                    case 4:
-                        return new int[2] { 5, 1 };
-                    case 6:
-                        return new int[2] { 4, 2 };
-                    case 8:
-                        return new int[2] { 3, 3 };
-                    default:
-                        break;
-                }
-            }
+                for (int j = 0; j < lineCnt; j++)
+                    for (int i = 0; i < lineCnt; i++)
+                        if (board[j, i] == STONE.none)
+                        {
+                            Thread.Sleep(1000);
+                            return new int[2] { j, i };
+                        }
 
             return new int[2] { 0, 0 };
         }
+
+        public int[] miniMaxAI(STONE[,] board, STONE AIColor, int stoneCnt)
+        {   // TODO!!!!! 사용자가 흑돌하면 무조건 왼쪽위 대각선 두 칸 떨어진 곳에 착수함 ㅅㅂ!
+            if (stoneCnt == 0)  // 첫 수는 중앙
+            {
+                Thread.Sleep(1000);
+                return new int[2] { 7, 7 };
+            }
+
+            this.board = board;
+            int[] result = new int[2] { 0, 0 };
+            int maxWeight = -(int)Weight.Gameover;
+            int[,] w_board = addWeight(AIColor);
+
+            for (int j = 0; j < lineCnt; j++)
+            {
+                for (int i = 0; i < lineCnt; i++)
+                {
+                    if (w_board[j, i] > maxWeight)
+                    {
+                        maxWeight = w_board[j, i];
+                        result[0] = j;
+                        result[1] = i;
+                    }
+                }
+            }
+
+
+            if (board[result[0], result[1]] != STONE.none)
+            {
+                Console.WriteLine("random did!");
+                return randomAI(board);
+            }
+            else
+            {
+                Thread.Sleep(1000);
+                return result;
+            }
+        }
+    }
+
+
+    struct WeightInfo
+    {
+        public int connectCnt;
+        public int closedCnt;
+        public bool jump;
+
+        public WeightInfo(int connectCnt, int closedCnt, bool jump)
+        {
+            this.connectCnt = connectCnt;
+            this.closedCnt = closedCnt;
+            this.jump = jump;
+        }
+    }
+
+    enum Weight
+    {
+        Gameover = int.MaxValue,
+        NextOver = int.MaxValue,
+        NoVictory43 = 800,
+        OpenJump4 = 660,
+        Open32 = 420,
+        Open222 = 410,
+        OpenNojump3 = 400,
+        OpenJump3 = 360,
+        ClosedNojump4 = 200,
+        ClosedJump4 = 190,
+        ClosedJump3 = 120,
+        ClosedNojump3 = 60,
+        Open2 = 40,
+        Closed2 = 30
     }
 }
+
+
+
+// 이전 금수체크 알고리즘 (33, 44에 대한 정의 차이 때문에)
+/*
+ * public bool checkForbidden(int x, int y, STONE[,] board)
+        {
+            this.board = board;
+            this.board[x, y] = STONE.black;  // 해당 빈 공간이 검정돌일 때를 가정
+
+            List<Point> axisList = checkOpenDir1(x, y);
+            if (axisList.Count == 3) // 33 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir2(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 3))
+                    {
+                        this.board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+            else if (axisList.Count == 4) // 44 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir2(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 4))
+                    {
+                        this.board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+
+            axisList = checkOpenDir2(x, y);
+            if (axisList.Count == 3) // 33 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 3))
+                    {
+                        this.board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+            else if (axisList.Count == 4) // 44 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 4))
+                    {
+                        this.board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+
+            axisList = checkOpenDir3(x, y);
+            if (axisList.Count == 3) // 33 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir2(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 3))
+                    {
+                        this.board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+            else if (axisList.Count == 4) // 44 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir2(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir4(p.X, p.Y).Count == 4))
+                    {
+                        this.board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+
+            axisList = checkOpenDir4(x, y);
+            if (axisList.Count == 3) // 33 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir2(p.X, p.Y).Count == 3) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 3))
+                    {
+                        this.board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+            else if (axisList.Count == 4) // 44 check
+            {
+                foreach (Point p in axisList)
+                {
+                    if ((checkOpenDir1(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir2(p.X, p.Y).Count == 4) ||
+                        (checkOpenDir3(p.X, p.Y).Count == 4))
+                    {
+                        this.board[x, y] = STONE.none;
+                        return true;
+                    }
+                }
+            }
+
+            this.board[x, y] = STONE.none;
+            return false;
+        }
+*/
