@@ -118,7 +118,6 @@ namespace OmokProgram
         // 게임이 끝났는지 확인하는 알고리즘. return winner
         public STONE checkOmok(STONE[,] board, int x, int y, STONE color)
         { // 승부 안남: none, 
-            Console.WriteLine("color {0}", color.ToString());
             if (x < 0 || y < 0 || x >= lineCnt || y >= lineCnt) return STONE.none;
             int cnt = 1;
             this.x = x;
@@ -1067,11 +1066,11 @@ namespace OmokProgram
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump3;
                             }
-                            if (c2C0F + c2C0T == 1)  // 열린 2
+                            if (c2C0F >= 1)  // 열린 2
                             {
                                 w_board[j, i] += (int)Weight.OpenJump2;
                             }
-                            if (c2C1F + c2C1T == 1)  // 닫힌 2
+                            if (c2C1F >= 1)  // 닫힌 2
                             {
                                 w_board[j, i] += (int)Weight.Closed2;
                             }
@@ -1205,7 +1204,7 @@ namespace OmokProgram
                             {
                                 w_board[j, i] += (int)Weight.OpenJump2;
                             }
-                            if (c2C1F + c2C1T == 1)  // 닫힌 2
+                            if (c2C1F >= 1)  // 닫힌 2
                             {
                                 w_board[j, i] += (int)Weight.Closed2;
                             }
@@ -1296,15 +1295,63 @@ namespace OmokProgram
             int maxWeight = -(int)Weight.Gameover;
             int[,] w_board = addWeight(AIColor);
 
-            for (int j = 0; j < lineCnt; j++)
+            if ((stoneCnt / 2) % 4 == 0)
             {
-                for (int i = 0; i < lineCnt; i++)
+                for (int j = 0; j < lineCnt; j++)
                 {
-                    if (w_board[j, i] > maxWeight)
+                    for (int i = 0; i < lineCnt; i++)
                     {
-                        maxWeight = w_board[j, i];
-                        result[0] = j;
-                        result[1] = i;
+                        if (w_board[j, i] > maxWeight)
+                        {
+                            maxWeight = w_board[j, i];
+                            result[0] = j;
+                            result[1] = i;
+                        }
+                    }
+                }
+            }
+            else if ((stoneCnt / 2) % 4 == 1)
+            {
+                for (int j = 0; j < lineCnt; j++)
+                {
+                    for (int i = lineCnt - 1; i >= 0; i--)
+                    {
+                        if (w_board[j, i] > maxWeight)
+                        {
+                            maxWeight = w_board[j, i];
+                            result[0] = j;
+                            result[1] = i;
+                        }
+                    }
+                }
+            }
+            else if ((stoneCnt / 2) % 4 == 2)
+            {
+                for (int j = lineCnt - 1; j >= 0; j--)
+                {
+                    for (int i = 0; i < lineCnt; i++)
+                    {
+                        if (w_board[j, i] > maxWeight)
+                        {
+                            maxWeight = w_board[j, i];
+                            result[0] = j;
+                            result[1] = i;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int j = lineCnt - 1; j >= 0; j--)
+                {
+                    for (int i = lineCnt - 1; i >= 0; i--)
+                    {
+                        if (w_board[j, i] > maxWeight)
+                        {
+                            maxWeight = w_board[j, i];
+                            result[0] = j;
+                            result[1] = i;
+                        }
                     }
                 }
             }
@@ -1336,18 +1383,72 @@ namespace OmokProgram
             int maxWeight = -(int)Weight.Gameover;
             int[,] w_board = addWeight(AIColor);
 
-            for (int j = 0; j < lineCnt; j++)
+
+            if ((stoneCnt / 2) % 4 == 0)
             {
-                for (int i = 0; i < lineCnt; i++)
+                Console.WriteLine("if Stone Cnt !!!!!!!!!!!!!{0}", stoneCnt);
+                for (int j = 0; j < lineCnt; j++)
                 {
-                    if (w_board[j, i] > maxWeight)
+                    for (int i = 0; i < lineCnt; i++)
                     {
-                        maxWeight = w_board[j, i];
-                        result[0] = j;
-                        result[1] = i;
+                        if (w_board[j, i] > maxWeight)
+                        {
+                            maxWeight = w_board[j, i];
+                            result[0] = j;
+                            result[1] = i;
+                        }
                     }
                 }
             }
+            else if ((stoneCnt / 2) % 4 == 1)
+            {
+                Console.WriteLine("else if1 Stone Cnt !!!!!!!!!!!!!{0}", stoneCnt);
+                for (int j = 0; j < lineCnt; j++)
+                {
+                    for (int i = lineCnt - 1; i >= 0; i--)
+                    {
+                        if (w_board[j, i] > maxWeight)
+                        {
+                            maxWeight = w_board[j, i];
+                            result[0] = j;
+                            result[1] = i;
+                        }
+                    }
+                }
+            }
+            else if ((stoneCnt / 2) % 4 == 2)
+            {
+                Console.WriteLine("else if2 Stone Cnt !!!!!!!!!!!!!{0}", stoneCnt);
+                for (int j = lineCnt - 1; j >= 0 ; j--)
+                {
+                    for (int i = 0; i < lineCnt; i++)
+                    {
+                        if (w_board[j, i] > maxWeight)
+                        {
+                            maxWeight = w_board[j, i];
+                            result[0] = j;
+                            result[1] = i;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("else Stone Cnt !!!!!!!!!!!!!{0}", stoneCnt);
+                for (int j = lineCnt - 1; j >= 0; j--)
+                {
+                    for (int i = lineCnt - 1; i >= 0; i--)
+                    {
+                        if (w_board[j, i] > maxWeight)
+                        {
+                            maxWeight = w_board[j, i];
+                            result[0] = j;
+                            result[1] = i;
+                        }
+                    }
+                }
+            }
+
 
 
             if (board[result[0], result[1]] != STONE.none)
