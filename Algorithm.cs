@@ -666,252 +666,18 @@ namespace OmokProgram
             }
         }
 
-
-        private bool calcBlackWeight(int[,] w_board, int j, int i, STONE stone)
-        {
-            int c5 = 0;  // connect - closed - jump
-            int c4C0F = 0;
-            int c4C1F = 0;
-            int c4C0T = 0;
-            int c4C1T = 0;
-            int c3C0F = 0;
-            int c3C1F = 0;
-            int c3C0T = 0;
-            int c3C1T = 0;
-            int c2C0F = 0;
-            int c2C1F = 0;
-            int c2C0T = 0;
-            int c2C1T = 0;
-
-            List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
-            li.Add(checkDir1(j, i, stone));
-            li.Add(checkDir2(j, i, stone));
-            li.Add(checkDir3(j, i, stone));
-            li.Add(checkDir4(j, i, stone));
-            foreach (WeightInfo wi in li)
-            {
-                if (wi.connectCnt == 5 && wi.jump == false) c5++;
-                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == false) c4C0F++;
-                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == false) c4C1F++;
-                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == true) c4C0T++;
-                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == true) c4C1T++;
-                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == false) c3C0F++;
-                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == false) c3C1F++;
-                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == true) c3C0T++;
-                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == true) c3C1T++;
-                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == false) c2C0F++;
-                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == false) c2C1F++;
-                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == true) c2C0T++;
-                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == true) c2C1T++;
-            }
-
-            // 필승카드
-            if (c5 >= 1)  // 5목  // 11, 3확인
-            {
-                w_board[j, i] = (int)Weight.Gameover;
-                return true;
-            }
-            else if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
-            {
-                w_board[j, i] = (int)Weight.NextOver;
-                return true;
-            }
-            else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린 3
-            {
-                w_board[j, i] = (int)Weight.NextOver;
-                return true;
-            }
-
-            // 가중치 합 필요
-            if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
-                (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
-            {
-                w_board[j, i] += (int)Weight.NoVictory43;
-            }
-            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
-            {
-                w_board[j, i] += (int)Weight.OpenJump4;
-            }
-            if (c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1)  // 열린 32
-            {
-                w_board[j, i] += (int)Weight.Open32;
-            }
-            if (c2C0T + c2C0F >= 3)  // 열린 222
-            {
-                w_board[j, i] += (int)Weight.Open222;
-            }
-            if (c3C0F == 1)  // 이어진, 열린 3
-            {
-                w_board[j, i] += (int)Weight.OpenNojump3;
-            }
-            if (c3C0T == 1)  // 한 칸 띄어진, 열린 3
-            {
-                w_board[j, i] += (int)Weight.OpenJump3;
-            }
-            if (c4C1F == 1)  // 이어진, 닫힌 4
-            {
-                w_board[j, i] += (int)Weight.ClosedNojump4;
-            }
-            if (c4C1T == 1)  // 띄어진, 닫힌 4
-            {
-                w_board[j, i] += (int)Weight.ClosedJump4;
-            }
-            if (c3C1T == 1)  // 띄어진, 닫힌 3
-            {
-                w_board[j, i] += (int)Weight.ClosedJump3;
-            }
-            if (c3C1F == 1)  // 이어진, 닫힌 3
-            {
-                w_board[j, i] += (int)Weight.ClosedNojump3;
-            }
-            if (c2C0F + c2C0T == 1)  // 열린 2
-            {
-                w_board[j, i] += (int)Weight.Open2;
-            }
-            if (c2C1F + c2C1T == 1)  // 닫힌 2
-            {
-                w_board[j, i] += (int)Weight.Closed2;
-            }
-
-            return false;
-        }
-
-
-        private bool calcWhiteWeight(int[,] w_board, int j, int i, STONE stone)
-        {
-            int c5F = 0;  // connect - closed - jump
-            int c5C0T = 0;  // 가중치 임의로 넣음
-            int c5C1T = 0;  // 가중치 임의로 넣음
-            int c5C2T = 0;  // 가중치 임의로 넣음
-            int c4C0F = 0;
-            int c4C1F = 0;
-            int c4C0T = 0;
-            int c4C1T = 0;
-            int c3C0F = 0;
-            int c3C1F = 0;
-            int c3C0T = 0;
-            int c3C1T = 0;
-            int c2C0F = 0;
-            int c2C1F = 0;
-            int c2C0T = 0;
-            int c2C1T = 0;
-
-
-            List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
-            li.Add(checkDir1(j, i, stone));
-            li.Add(checkDir2(j, i, stone));
-            li.Add(checkDir3(j, i, stone));
-            li.Add(checkDir4(j, i, stone));
-
-            foreach (WeightInfo wi in li)
-            {
-                if (wi.connectCnt >= 5 && wi.jump == false) c5F++;
-                else if (wi.connectCnt >= 5 && wi.closedCnt == 0) c5C0T++;
-                else if (wi.connectCnt >= 5 && wi.closedCnt == 1) c5C1T++;
-                else if (wi.connectCnt >= 5 && wi.closedCnt == 2) c5C2T++;
-                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == false) c4C0F++;
-                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == false) c4C1F++;
-                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == true) c4C0T++;
-                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == true) c4C1T++;
-                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == false) c3C0F++;
-                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == false) c3C1F++;
-                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == true) c3C0T++;
-                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == true) c3C1T++;
-                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == false) c2C0F++;
-                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == false) c2C1F++;
-                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == true) c2C0T++;
-                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == true) c2C1T++;
-            }
-
-            // 필승 카드
-            if (c5F >= 1)  // 5목 + 장목
-            {
-                w_board[j, i] = (int)Weight.Gameover;
-                return true;
-            }
-            else if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
-            {
-                w_board[j, i] = (int)Weight.NextOver;
-                return true;
-            }
-            else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린3
-            {
-                w_board[j, i] = (int)Weight.NextOver;
-                return true;
-            }
-            else if (c3C0F + c3C0T >= 2)  // 열린 3이 2 개 이상
-            {
-                w_board[j, i] = (int)Weight.NextOver;
-                return true;
-            }
-
-            // 가중치 합 필요
-            // 가중치 합 필요
-            if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
-                (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
-            {
-                w_board[j, i] += (int)Weight.NoVictory43;
-            }
-            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
-            {
-                w_board[j, i] += (int)Weight.OpenJump4;
-            }
-            if ((c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1) || c5C0T >= 1)  // 열린 32
-            {
-                w_board[j, i] += (int)Weight.Open32;
-            }
-            if (c2C0T + c2C0F >= 3)  // 열린 222
-            {
-                w_board[j, i] += (int)Weight.Open222;
-            }
-            if (c3C0F == 1)  // 이어진, 열린 3
-            {
-                w_board[j, i] += (int)Weight.OpenNojump3;
-            }
-            if (c3C0T == 1 || c5C1T >= 1)  // 한 칸 띄어진, 열린 3
-            {
-                w_board[j, i] += (int)Weight.OpenJump3;
-            }
-            if (c4C1F == 1 || c5C2T >= 1)  // 이어진, 닫힌 4
-            {
-                w_board[j, i] += (int)Weight.ClosedNojump4;
-            }
-            if (c4C1T == 1)  // 띄어진, 닫힌 4
-            {
-                w_board[j, i] += (int)Weight.ClosedJump4;
-            }
-            if (c3C1T == 1)  // 띄어진, 닫힌 3
-            {
-                w_board[j, i] += (int)Weight.ClosedJump3;
-            }
-            if (c3C1F == 1)  // 이어진, 닫힌 3
-            {
-                w_board[j, i] += (int)Weight.ClosedNojump3;
-            }
-            if (c2C0F + c2C0T == 1)  // 열린 2
-            {
-                w_board[j, i] += (int)Weight.Open2;
-            }
-            if (c2C1F + c2C1T == 1)  // 닫힌 2
-            {
-                w_board[j, i] += (int)Weight.Closed2;
-            }
-
-            return false;
-        }
-
-
             // 가중치 부여. 내 턴마다 새롭게 가중치판을 생성.
-            public int[,] addWeight(STONE AIColor)
+        public int[,] addWeight(STONE AIColor)
         {
             int[,] w_board = new int[lineCnt, lineCnt];  // 가중치판. 0으로 초기화
-            STONE stone = STONE.black;
+            STONE stone;
             bool gameover = false;  // gameover == true이면 더이상 가중치 계산을 그만함
 
             switch (AIColor)
             {
                 case STONE.black:  // 금수 위치 가중치 조정o
                     // 해당 위치에 자신의 돌, 즉 black을 놓을 때 가중치를 더함
+                    stone = STONE.black;
                     for (int j = 0; j < lineCnt; j++)
                     {
                         for (int i = 0; i < lineCnt; i++)
@@ -925,21 +691,237 @@ namespace OmokProgram
                                 continue;
                             }
 
-                            gameover = calcBlackWeight(w_board, j, i, stone);
+                            int c5 = 0;  // connect - closed - jump
+                            int c4C0F = 0;
+                            int c4C1F = 0;
+                            int c4C0T = 0;
+                            int c4C1T = 0;
+                            int c3C0F = 0;
+                            int c3C1F = 0;
+                            int c3C0T = 0;
+                            int c3C1T = 0;
+                            int c2C0F = 0;
+                            int c2C1F = 0;
+                            int c2C0T = 0;
+                            int c2C1T = 0;
+
+                            List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
+                            li.Add(checkDir1(j, i, stone));
+                            li.Add(checkDir2(j, i, stone));
+                            li.Add(checkDir3(j, i, stone));
+                            li.Add(checkDir4(j, i, stone));
+                            foreach (WeightInfo wi in li)
+                            {
+                                if (wi.connectCnt == 5 && wi.jump == false) c5++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == false) c4C0F++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == false) c4C1F++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == true) c4C0T++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == true) c4C1T++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == false) c3C0F++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == false) c3C1F++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == true) c3C0T++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == true) c3C1T++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == false) c2C0F++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == false) c2C1F++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == true) c2C0T++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == true) c2C1T++;
+                            }
+
+                            // 게임 종료
+                            if (c5 >= 1)  // 5목  // 11, 3확인
+                            {
+                                w_board[j, i] = (int)Weight.Gameover;
+                                gameover = true;
+                                break;
+                            }
+                            // 필승 카드
+                            if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린 3
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            // 가중치 합 필요
+                            if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
+                                (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
+                            {
+                                w_board[j, i] += (int)Weight.NoVictory43;
+                            }
+                            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump4;
+                            }
+                            if (c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1)  // 열린 32
+                            {
+                                w_board[j, i] += (int)Weight.Open32;
+                            }
+                            if (c2C0T + c2C0F >= 3)  // 열린 222
+                            {
+                                w_board[j, i] += (int)Weight.Open222;
+                            }
+                            if (c3C0F == 1)  // 이어진, 열린 3
+                            {
+                                w_board[j, i] += (int)Weight.OpenNojump3;
+                            }
+                            if (c3C0T == 1)  // 한 칸 띄어진, 열린 3
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump3;
+                            }
+                            if (c4C1F == 1)  // 이어진, 닫힌 4
+                            {
+                                w_board[j, i] += (int)Weight.ClosedNojump4;
+                            }
+                            if (c4C1T == 1)  // 띄어진, 닫힌 4
+                            {
+                                w_board[j, i] += (int)Weight.ClosedJump4;
+                            }
+                            if (c3C1T == 1)  // 띄어진, 닫힌 3
+                            {
+                                w_board[j, i] += (int)Weight.ClosedJump3;
+                            }
+                            if (c3C1F == 1)  // 이어진, 닫힌 3
+                            {
+                                w_board[j, i] += (int)Weight.ClosedNojump3;
+                            }
+                            if (c2C0F + c2C0T == 1)  // 열린 2
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump2;
+                            }
+                            if (c2C1F + c2C1T == 1)  // 닫힌 2
+                            {
+                                w_board[j, i] += (int)Weight.Closed2;
+                            }
                         }
                         if (gameover) break;
                     }
+                    if (gameover) break;
+
 
                     // 해당 위치에 상대방 돌, 즉 white를 놓을 때 가중치를 더함
                     stone = STONE.white;
-                    if (gameover) break;
                     for (int j = 0; j < lineCnt; j++)
                     {
                         for (int i = 0; i < lineCnt; i++)
                         {
                             if (board[j, i] != STONE.none || w_board[j,i] < -100000) continue;  // 금수 위치는 절대 고려 x
+                            
 
-                            gameover = calcWhiteWeight(w_board, j, i, stone);
+                            int c5F = 0;  // connect - closed - jump
+                            int c5C0T = 0;  // 가중치 임의로 넣음
+                            int c5C1T = 0;  // 가중치 임의로 넣음
+                            int c5C2T = 0;  // 가중치 임의로 넣음
+                            int c4C0F = 0;
+                            int c4C1F = 0;
+                            int c4C0T = 0;
+                            int c4C1T = 0;
+                            int c3C0F = 0;
+                            int c3C1F = 0;
+                            int c3C0T = 0;
+                            int c3C1T = 0;
+                            int c2C0F = 0;
+                            int c2C1F = 0;
+                            int c2C0T = 0;
+                            int c2C1T = 0;
+
+
+                            List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
+                            li.Add(checkDir1(j, i, stone));
+                            li.Add(checkDir2(j, i, stone));
+                            li.Add(checkDir3(j, i, stone));
+                            li.Add(checkDir4(j, i, stone));
+
+                            foreach (WeightInfo wi in li)
+                            {
+                                if (wi.connectCnt >= 5 && wi.jump == false) c5F++;
+                                else if (wi.connectCnt >= 5 && wi.closedCnt == 0) c5C0T++;
+                                else if (wi.connectCnt >= 5 && wi.closedCnt == 1) c5C1T++;
+                                else if (wi.connectCnt >= 5 && wi.closedCnt == 2) c5C2T++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == false) c4C0F++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == false) c4C1F++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == true) c4C0T++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == true) c4C1T++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == false) c3C0F++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == false) c3C1F++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == true) c3C0T++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == true) c3C1T++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == false) c2C0F++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == false) c2C1F++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == true) c2C0T++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == true) c2C1T++;
+                            }
+
+                            // 게임끝
+                            if (c5F >= 1)  // 5목 + 장목
+                            {
+                                w_board[j, i] = (int)Weight.Gameover;
+                                gameover = true;
+                                break;
+                            }
+                            // 필승카드
+                            if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린3
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            else if (c3C0F + c3C0T >= 2)  // 열린 3이 2 개 이상
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            // 가중치 합 필요
+                            if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
+                                (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
+                            {
+                                w_board[j, i] += (int)Weight.NoVictory43;
+                            }
+                            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump4;
+                            }
+                            if ((c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1) || c5C0T >= 1)  // 열린 32
+                            {
+                                w_board[j, i] += (int)Weight.Open32;
+                            }
+                            if (c2C0T + c2C0F >= 3)  // 열린 222
+                            {
+                                w_board[j, i] += (int)Weight.Open222;
+                            }
+                            if (c3C0F == 1)  // 이어진, 열린 3
+                            {
+                                w_board[j, i] += (int)Weight.OpenNojump3;
+                            }
+                            if (c3C0T == 1 || c5C1T >= 1)  // 한 칸 띄어진, 열린 3
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump3;
+                            }
+                            if (c4C1F == 1 || c5C2T >= 1)  // 이어진, 닫힌 4
+                            {
+                                w_board[j, i] += (int)Weight.ClosedNojump4;
+                            }
+                            if (c4C1T == 1)  // 띄어진, 닫힌 4
+                            {
+                                w_board[j, i] += (int)Weight.ClosedJump4;
+                            }
+                            if (c3C1T == 1)  // 띄어진, 닫힌 3
+                            {
+                                w_board[j, i] += (int)Weight.ClosedJump3;
+                            }
+                            if (c3C1F == 1)  // 이어진, 닫힌 3
+                            {
+                                w_board[j, i] += (int)Weight.ClosedNojump3;
+                            }
+                            if (c2C0F + c2C0T == 1)  // 열린 2
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump2;
+                            }
+                            if (c2C1F + c2C1T == 1)  // 닫힌 2
+                            {
+                                w_board[j, i] += (int)Weight.Closed2;
+                            }
                         }
                         if (gameover) break;
                     }
@@ -947,34 +929,253 @@ namespace OmokProgram
 
 
                 case STONE.white:  // 금수 위치 가중치 조정x. 그냥 내가 유리해지기만 하는지 판단
+                    // 해당 위치에 자신의 돌, 즉 white을 놓을 때 가중치를 더함
+                    stone = STONE.white;
+                    for (int j = 0; j < lineCnt; j++)
+                    {
+                        for (int i = 0; i < lineCnt; i++)
+                        {
+                            if (board[j, i] != STONE.none) continue;
+
+                            int c5F = 0;  // connect - closed - jump
+                            int c5C0T = 0;  // 가중치 임의로 넣음
+                            int c5C1T = 0;  // 가중치 임의로 넣음
+                            int c5C2T = 0;  // 가중치 임의로 넣음
+                            int c4C0F = 0;
+                            int c4C1F = 0;
+                            int c4C0T = 0;
+                            int c4C1T = 0;
+                            int c3C0F = 0;
+                            int c3C1F = 0;
+                            int c3C0T = 0;
+                            int c3C1T = 0;
+                            int c2C0F = 0;
+                            int c2C1F = 0;
+                            int c2C0T = 0;
+                            int c2C1T = 0;
+
+
+                            List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
+                            li.Add(checkDir1(j, i, stone));
+                            li.Add(checkDir2(j, i, stone));
+                            li.Add(checkDir3(j, i, stone));
+                            li.Add(checkDir4(j, i, stone));
+
+                            foreach (WeightInfo wi in li)
+                            {
+                                if (wi.connectCnt >= 5 && wi.jump == false) c5F++;
+                                else if (wi.connectCnt >= 5 && wi.closedCnt == 0) c5C0T++;
+                                else if (wi.connectCnt >= 5 && wi.closedCnt == 1) c5C1T++;
+                                else if (wi.connectCnt >= 5 && wi.closedCnt == 2) c5C2T++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == false) c4C0F++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == false) c4C1F++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == true) c4C0T++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == true) c4C1T++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == false) c3C0F++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == false) c3C1F++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == true) c3C0T++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == true) c3C1T++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == false) c2C0F++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == false) c2C1F++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == true) c2C0T++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == true) c2C1T++;
+                            }
+
+                            // 게임 종료
+                            if (c5F >= 1)  // 5목 + 장목
+                            {
+                                w_board[j, i] = (int)Weight.Gameover;
+                                gameover = true;
+                                break;
+                            }
+                            // 필승 카드
+                            if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린3
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            else if (c3C0F + c3C0T >= 2)  // 열린 3이 2 개 이상
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            // 가중치 합 필요
+                            if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
+                                (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
+                            {
+                                w_board[j, i] += (int)Weight.NoVictory43;
+                            }
+                            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump4;
+                            }
+                            if ((c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1) || c5C0T >= 1)  // 열린 32
+                            {
+                                w_board[j, i] += (int)Weight.Open32;
+                            }
+                            if (c2C0T + c2C0F >= 3)  // 열린 222
+                            {
+                                w_board[j, i] += (int)Weight.Open222;
+                            }
+                            if (c3C0F == 1)  // 이어진, 열린 3
+                            {
+                                w_board[j, i] += (int)Weight.OpenNojump3;
+                            }
+                            if (c3C0T == 1 || c5C1T >= 1)  // 한 칸 띄어진, 열린 3
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump3;
+                            }
+                            if (c4C1F == 1 || c5C2T >= 1)  // 이어진, 닫힌 4
+                            {
+                                w_board[j, i] += (int)Weight.ClosedNojump4;
+                            }
+                            if (c4C1T == 1)  // 띄어진, 닫힌 4
+                            {
+                                w_board[j, i] += (int)Weight.ClosedJump4;
+                            }
+                            if (c3C1T == 1)  // 띄어진, 닫힌 3
+                            {
+                                w_board[j, i] += (int)Weight.ClosedJump3;
+                            }
+                            if (c3C1F == 1)  // 이어진, 닫힌 3
+                            {
+                                w_board[j, i] += (int)Weight.ClosedNojump3;
+                            }
+                            if (c2C0F + c2C0T == 1)  // 열린 2
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump2;
+                            }
+                            if (c2C1F + c2C1T == 1)  // 닫힌 2
+                            {
+                                w_board[j, i] += (int)Weight.Closed2;
+                            }
+                        }
+                        if (gameover) break;
+                    }
+                    if (gameover) break;
+
+
                     // 해당 위치에 상대방 돌, 즉 black를 놓을 때 가중치를 더함
+                    stone = STONE.black;
                     for (int j = 0; j < lineCnt; j++)
                     {
                         for (int i = 0; i < lineCnt; i++)
                         {
                             if (board[j, i] != STONE.none) continue;
                             if (j > 0 && j < lineCnt - 1 &&
-                                i > 0 && i < lineCnt - 1 && 
+                                i > 0 && i < lineCnt - 1 &&
                                 checkForbidden(j, i, board)) continue; // black의 금수 위치
                                                                        // 똑똑한 상대방은  해당 위치에 두지 않는다고 판단
 
-                            gameover = calcBlackWeight(w_board, j, i, stone);
+                            int c5 = 0;  // connect - closed - jump
+                            int c4C0F = 0;
+                            int c4C1F = 0;
+                            int c4C0T = 0;
+                            int c4C1T = 0;
+                            int c3C0F = 0;
+                            int c3C1F = 0;
+                            int c3C0T = 0;
+                            int c3C1T = 0;
+                            int c2C0F = 0;
+                            int c2C1F = 0;
+                            int c2C0T = 0;
+                            int c2C1T = 0;
+
+                            List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
+                            li.Add(checkDir1(j, i, stone));
+                            li.Add(checkDir2(j, i, stone));
+                            li.Add(checkDir3(j, i, stone));
+                            li.Add(checkDir4(j, i, stone));
+                            foreach (WeightInfo wi in li)
+                            {
+                                if (wi.connectCnt == 5 && wi.jump == false) c5++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == false) c4C0F++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == false) c4C1F++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 0 && wi.jump == true) c4C0T++;
+                                else if (wi.connectCnt == 4 && wi.closedCnt == 1 && wi.jump == true) c4C1T++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == false) c3C0F++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == false) c3C1F++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 0 && wi.jump == true) c3C0T++;
+                                else if (wi.connectCnt == 3 && wi.closedCnt == 1 && wi.jump == true) c3C1T++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == false) c2C0F++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == false) c2C1F++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 0 && wi.jump == true) c2C0T++;
+                                else if (wi.connectCnt == 2 && wi.closedCnt == 1 && wi.jump == true) c2C1T++;
+                            }
+
+                            // 게임 종료
+                            if (c5 >= 1)  // 5목  // 11, 3확인
+                            {
+                                w_board[j, i] = (int)Weight.Gameover;
+                                gameover = true;
+                                break;
+                            }
+                            // 필승 카드
+                            if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린 3
+                            {
+                                w_board[j, i] = (int)Weight.NextOver;
+                            }
+                            // 가중치 합 필요
+                            if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
+                                (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
+                            {
+                                w_board[j, i] += (int)Weight.NoVictory43;
+                            }
+                            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump4;
+                            }
+                            if (c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1)  // 열린 32
+                            {
+                                w_board[j, i] += (int)Weight.Open32;
+                            }
+                            if (c2C0T + c2C0F >= 3)  // 열린 222
+                            {
+                                w_board[j, i] += (int)Weight.Open222;
+                            }
+                            if (c3C0F == 1)  // 이어진, 열린 3
+                            {
+                                w_board[j, i] += (int)Weight.OpenNojump3;
+                            }
+                            if (c3C0T == 1)  // 한 칸 띄어진, 열린 3
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump3;
+                            }
+                            if (c4C1F == 1)  // 이어진, 닫힌 4
+                            {
+                                w_board[j, i] += (int)Weight.ClosedNojump4;
+                            }
+                            if (c4C1T == 1)  // 띄어진, 닫힌 4
+                            {
+                                w_board[j, i] += (int)Weight.ClosedJump4;
+                            }
+                            if (c3C1T == 1)  // 띄어진, 닫힌 3
+                            {
+                                w_board[j, i] += (int)Weight.ClosedJump3;
+                            }
+                            if (c3C1F == 1)  // 이어진, 닫힌 3
+                            {
+                                w_board[j, i] += (int)Weight.ClosedNojump3;
+                            }
+                            if (c2C0F == 1)  // 이어진, 열린 2
+                            {
+                                w_board[j, i] += (int)Weight.OpenNoJump2;
+                            }
+                            if (c2C0T == 1)  // 떨어진, 열린 2
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump2;
+                            }
+                            if (c2C1F + c2C1T == 1)  // 닫힌 2
+                            {
+                                w_board[j, i] += (int)Weight.Closed2;
+                            }
                         }
-                        if (gameover) break;
-                    }
-
-                    // 해당 위치에 자신의 돌, 즉 white을 놓을 때 가중치를 더함
-                    stone = STONE.white;
-                    if (gameover) break;
-                    for (int j = 0; j < lineCnt; j++)
-                    {
-                        for (int i = 0; i < lineCnt; i++)
-                        {
-                            if (board[j, i] != STONE.none) continue;
-
-                            gameover = calcWhiteWeight(w_board, j, i, stone);
-                        }
-
                         if (gameover) break;
                     }
                     break;
@@ -1049,7 +1250,7 @@ namespace OmokProgram
         }
 
         public int[] miniMaxAI(STONE[,] board, STONE AIColor, int stoneCnt)
-        {   // TODO!!!!! 사용자가 흑돌하면 무조건 왼쪽위 대각선 두 칸 떨어진 곳에 착수함 ㅅㅂ!
+        { 
             if (stoneCnt == 0)  // 첫 수는 중앙
             {
                 Thread.Sleep(1000);
@@ -1105,8 +1306,8 @@ namespace OmokProgram
 
     enum Weight
     {
-        Gameover = int.MaxValue,
-        NextOver = int.MaxValue,
+        Gameover = 150000,
+        NextOver = 30000,
         NoVictory43 = 800,
         OpenJump4 = 660,
         Open32 = 420,
@@ -1117,7 +1318,8 @@ namespace OmokProgram
         ClosedJump4 = 190,
         ClosedJump3 = 120,
         ClosedNojump3 = 60,
-        Open2 = 40,
+        OpenNoJump2 = 50,
+        OpenJump2 = 40,
         Closed2 = 30
     }
 }

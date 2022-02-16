@@ -46,9 +46,6 @@ namespace OmokProgram
             InitializeComponent();
             FormClosing += new FormClosingEventHandler(closing);
             closeProgram = true;
-
-            Thread cur_thread = Thread.CurrentThread;
-            Console.WriteLine("current thread id = {0}", cur_thread.ManagedThreadId);
         }
         private void MultiPlayForm_Load(object sender, EventArgs e)
         {
@@ -83,9 +80,6 @@ namespace OmokProgram
         // play game 관련
         private void playGame()
         {
-            Thread cur_thread = Thread.CurrentThread;
-            Console.WriteLine("current thread id = {0}", cur_thread.ManagedThreadId);
-
             try
             {
                 stream.Read(buffer, 0, protocolSize);
@@ -101,9 +95,9 @@ namespace OmokProgram
                 if (myColor == turn) // 내턴
                 {
                     Console.WriteLine("my turn");
-                    if (pnBoard.stoneCnt == 0) pnBoard.axis = new int[2] { 7, 7 }; // 선공이면 중앙에 두기
-                    else pnBoard.axis = algorithm.fastAI(pnBoard.board, pnBoard.stoneCnt);
-                    //pnBoard.axis = algorithm.miniMaxAI(pnBoard.board, myColor, pnBoard.stoneCnt);
+                    //if (pnBoard.stoneCnt == 0) pnBoard.axis = new int[2] { 7, 7 }; // 선공이면 중앙에 두기
+                    //else pnBoard.axis = algorithm.fastAI(pnBoard.board, pnBoard.stoneCnt);
+                    pnBoard.axis = algorithm.miniMaxAI(pnBoard.board, myColor, pnBoard.stoneCnt);
                     Console.WriteLine("x: {0}, y: {1} 결정", pnBoard.axis[0], pnBoard.axis[1]);
 
                     protocol.command = (byte)3;
@@ -168,15 +162,12 @@ namespace OmokProgram
                 }
             }
 
+            Console.WriteLine("play finished!");
+
+            showFinishScreen();
+            if (buffer[2] != (byte)0 && buffer[2] != (byte)1) showFinishReason();
             stream.Close();
             client.Close();
-            Console.WriteLine("play finished!");
-            if (buffer[2] != (byte)0 && buffer[2] != (byte)1)
-            {
-                showFinishReason();
-                showFinishScreen();
-            }
-            else showFinishScreen();
         }
         private void drawStone()
         {
