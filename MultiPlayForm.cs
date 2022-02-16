@@ -59,6 +59,7 @@ namespace OmokProgram
                 
                 if (buffer[2] == 1)  // 연결 성공
                 {
+                    Thread.Sleep(1000);
                     myColor = buffer[1] == 0 ? STONE.black : STONE.white;
 
                     // ready

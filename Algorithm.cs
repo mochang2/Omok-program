@@ -735,66 +735,99 @@ namespace OmokProgram
                             // 게임 종료
                             if (c5 >= 1)  // 5목  // 11, 3확인
                             {
-                                w_board[j, i] = (int)Weight.Gameover;
+                                w_board[j, i] += (int)Weight.Gameover;
                                 gameover = true;
                                 break;
                             }
                             // 필승 카드
                             if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
                             {
-                                w_board[j, i] = (int)Weight.Open4;
+                                w_board[j, i] += (int)Weight.Open4;
+                                c4C0F = 0;
                             }
                             else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린 3
                             {
-                                w_board[j, i] = (int)Weight.Closed4Open3;
+                                w_board[j, i] += (int)Weight.Closed4Open3;
+                                c4C1T = 0;
+                                c4C1F = 0;
+                                c3C0F = 0;
+                            }
+                            else if (c3C0T >= 1 && c3C0F >= 1)  // 하나는 띄어진, 열린 33
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump33;
+                                c3C0T = 0;
+                                c3C0F = 0;
                             }
                             // 가중치 합 필요
                             if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
                                 (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
                             {
                                 w_board[j, i] += (int)Weight.NoVictory43;
+                                if (c4C1T + c4C1F >= 1 && c3C0T >= 1)
+                                {
+                                    c4C1T = 0;
+                                    c4C1F = 0;
+                                    c3C0T = 0;
+                                }
+                                else if (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)
+                                {
+                                    c4C1T = 0;
+                                    c4C1F = 0;
+                                    c3C1F = 0;
+                                    c3C1T = 0;
+                                }
                             }
-                            if (c4C0T == 1)  // 한 칸 띄어진 열린 4
+                            if (c4C0T >= 1)  // 한 칸 띄어진 열린 4
                             {
                                 w_board[j, i] += (int)Weight.OpenJump4;
                             }
                             if (c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1)  // 열린 32
                             {
                                 w_board[j, i] += (int)Weight.Open32;
+                                c3C0F = 0;
+                                c3C0T = 0;
+                                c2C0F = 0;
+                                c2C0T = 0;
                             }
                             if (c2C0T + c2C0F >= 3)  // 열린 222
                             {
                                 w_board[j, i] += (int)Weight.Open222;
+                                c2C0T = 0;
+                                c2C0F = 0;
                             }
-                            if (c3C0F == 1)  // 이어진, 열린 3
+                            if (c3C0F >= 1)  // 이어진, 열린 3
                             {
                                 w_board[j, i] += (int)Weight.OpenNojump3;
                             }
-                            if (c3C0T == 1)  // 한 칸 띄어진, 열린 3
+                            if (c3C0T >= 1)  // 한 칸 띄어진, 열린 3
                             {
                                 w_board[j, i] += (int)Weight.OpenJump3;
                             }
-                            if (c4C1F == 1)  // 이어진, 닫힌 4
+                            if (c4C1F >= 1)  // 이어진, 닫힌 4
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump4;
                             }
-                            if (c4C1T == 1)  // 띄어진, 닫힌 4
+                            if (c4C1T >= 1)  // 띄어진, 닫힌 4
                             {
                                 w_board[j, i] += (int)Weight.ClosedJump4;
                             }
-                            if (c3C1T == 1)  // 띄어진, 닫힌 3
+                            if (c3C1T >= 1)  // 띄어진, 닫힌 3
                             {
                                 w_board[j, i] += (int)Weight.ClosedJump3;
                             }
-                            if (c3C1F == 1)  // 이어진, 닫힌 3
+                            if (c3C1F >= 1)  // 이어진, 닫힌 3
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump3;
                             }
-                            if (c2C0F + c2C0T == 1)  // 열린 2
+                            if (c2C0F >= 1)  // 이어진, 열린 2
+                            {
+                                w_board[j, i] += (int)Weight.OpenNoJump2;
+                            }
+                            if (c2C0T >= 1)  // 떨어진, 열린 2
                             {
                                 w_board[j, i] += (int)Weight.OpenJump2;
                             }
-                            if (c2C1F + c2C1T == 1)  // 닫힌 2
+                            if (c2C1F >= 1)  // 닫힌 2
                             {
                                 w_board[j, i] += (int)Weight.Closed2;
                             }
@@ -869,70 +902,99 @@ namespace OmokProgram
                             // 게임끝
                             if (c5F >= 1)  // 5목 + 장목
                             {
-                                w_board[j, i] = (int)Weight.Gameover;
+                                w_board[j, i] += (int)Weight.Gameover;
                                 gameover = true;
                                 break;
                             }
                             // 필승카드
                             if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
                             {
-                                w_board[j, i] = (int)Weight.Open4;
+                                w_board[j, i] += (int)Weight.Open4;
+                                c4C0F = 0;
                             }
                             else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린3
                             {
-                                w_board[j, i] = (int)Weight.Closed4Open3;
+                                w_board[j, i] += (int)Weight.Closed4Open3;
+                                c4C1T = 0;
+                                c4C1F = 0;
+                                c3C0F = 0;
                             }
                             else if (c3C0F + c3C0T >= 2)  // 열린 3이 2 개 이상
                             {
-                                w_board[j, i] = (int)Weight.Open33;
+                                w_board[j, i] += (int)Weight.OpenNoJump33;
+                                c3C0T = 0;
+                                c3C0F = 0;
                             }
                             // 가중치 합 필요
                             if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
                                 (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
                             {
                                 w_board[j, i] += (int)Weight.NoVictory43;
+                                if (c4C1T + c4C1F >= 1 && c3C0T >= 1)
+                                {
+                                    c4C1T = 0;
+                                    c4C1F = 0;
+                                    c3C0T = 0;
+                                }
+                                else if (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)
+                                {
+                                    c4C1T = 0;
+                                    c4C1F = 0;
+                                    c3C1F = 0;
+                                    c3C1T = 0;
+                                }
                             }
                             if (c4C0T == 1)  // 한 칸 띄어진 열린 4
                             {
                                 w_board[j, i] += (int)Weight.OpenJump4;
                             }
-                            if ((c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1) || c5C0T >= 1)  // 열린 32
+                            if (c5C0T >= 1)  // 6목이 가능한 한 칸 띄어진 열린 4
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump4;
+                            }
+                            if (c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1)  // 열린 32
                             {
                                 w_board[j, i] += (int)Weight.Open32;
+                                c3C0F = 0;
+                                c3C0T = 0;
+                                c2C0F = 0;
+                                c2C0T = 0;
                             }
                             if (c2C0T + c2C0F >= 3)  // 열린 222
                             {
                                 w_board[j, i] += (int)Weight.Open222;
+                                c2C0T = 0;
+                                c2C0F = 0;
                             }
-                            if (c3C0F == 1)  // 이어진, 열린 3
+                            if (c3C0F >= 1)  // 이어진, 열린 3
                             {
                                 w_board[j, i] += (int)Weight.OpenNojump3;
                             }
-                            if (c3C0T == 1 || c5C1T >= 1)  // 한 칸 띄어진, 열린 3
+                            if (c3C0T >= 1 || c5C1T >= 1)  // 한 칸 띄어진, 열린 3
                             {
                                 w_board[j, i] += (int)Weight.OpenJump3;
                             }
-                            if (c4C1F == 1 || c5C2T >= 1)  // 이어진, 닫힌 4
+                            if (c4C1F >= 1 || c5C2T >= 1)  // 이어진, 닫힌 4
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump4;
                             }
-                            if (c4C1T == 1)  // 띄어진, 닫힌 4
+                            if (c4C1T >= 1)  // 띄어진, 닫힌 4
                             {
                                 w_board[j, i] += (int)Weight.ClosedJump4;
                             }
-                            if (c3C1T == 1)  // 띄어진, 닫힌 3
+                            if (c3C1T >= 1)  // 띄어진, 닫힌 3
                             {
                                 w_board[j, i] += (int)Weight.ClosedJump3;
                             }
-                            if (c3C1F == 1)  // 이어진, 닫힌 3
+                            if (c3C1F >= 1)  // 이어진, 닫힌 3
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump3;
                             }
-                            if (c2C0F + c2C0T == 1)  // 열린 2
+                            if (c2C0F + c2C0T >= 1)  // 열린 2
                             {
                                 w_board[j, i] += (int)Weight.OpenJump2;
                             }
-                            if (c2C1F + c2C1T == 1)  // 닫힌 2
+                            if (c2C1F + c2C1T >= 1)  // 닫힌 2
                             {
                                 w_board[j, i] += (int)Weight.Closed2;
                             }
@@ -1007,62 +1069,91 @@ namespace OmokProgram
                             // 게임 종료
                             if (c5F >= 1)  // 5목 + 장목
                             {
-                                w_board[j, i] = (int)Weight.Gameover;
+                                w_board[j, i] += (int)Weight.Gameover;
                                 gameover = true;
                                 break;
                             }
                             // 필승 카드
                             if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
                             {
-                                w_board[j, i] = (int)Weight.Open4;
+                                w_board[j, i] += (int)Weight.Open4;
+                                c4C0F = 0;
                             }
                             else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린3
                             {
-                                w_board[j, i] = (int)Weight.Closed4Open3;
+                                w_board[j, i] += (int)Weight.Closed4Open3;
+                                c4C1T = 0;
+                                c4C1F = 0;
+                                c3C0F = 0;
                             }
                             else if (c3C0F + c3C0T >= 2)  // 열린 3이 2 개 이상
                             {
-                                w_board[j, i] = (int)Weight.Open33;
+                                w_board[j, i] += (int)Weight.OpenNoJump33;
+                                c3C0T = 0;
+                                c3C0F = 0;
                             }
                             // 가중치 합 필요
                             if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
                                 (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
                             {
                                 w_board[j, i] += (int)Weight.NoVictory43;
+                                if (c4C1T + c4C1F >= 1 && c3C0T >= 1)
+                                {
+                                    c4C1T = 0;
+                                    c4C1F = 0;
+                                    c3C0T = 0;
+                                }
+                                else if (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)
+                                {
+                                    c4C1T = 0;
+                                    c4C1F = 0;
+                                    c3C1F = 0;
+                                    c3C1T = 0;
+                                }
                             }
                             if (c4C0T == 1)  // 한 칸 띄어진 열린 4
                             {
                                 w_board[j, i] += (int)Weight.OpenJump4;
                             }
-                            if ((c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1) || c5C0T >= 1)  // 열린 32
+                            if (c5C0T >= 1)  // 6목이 가능한 한 칸 띄어진 열린 4
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump4;
+                            }
+                            if (c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1)  // 열린 32
                             {
                                 w_board[j, i] += (int)Weight.Open32;
+                                c3C0F = 0;
+                                c3C0T = 0;
+                                c2C0F = 0;
+                                c2C0T = 0;
                             }
                             if (c2C0T + c2C0F >= 3)  // 열린 222
                             {
                                 w_board[j, i] += (int)Weight.Open222;
+                                c2C0T = 0;
+                                c2C0F = 0;
                             }
-                            if (c3C0F == 1)  // 이어진, 열린 3
+                            if (c3C0F >= 1)  // 이어진, 열린 3
                             {
                                 w_board[j, i] += (int)Weight.OpenNojump3;
                             }
-                            if (c3C0T == 1 || c5C1T >= 1)  // 한 칸 띄어진, 열린 3
+                            if (c3C0T >= 1 || c5C1T >= 1)  // 한 칸 띄어진, 열린 3
                             {
                                 w_board[j, i] += (int)Weight.OpenJump3;
                             }
-                            if (c4C1F == 1 || c5C2T >= 1)  // 이어진, 닫힌 4
+                            if (c4C1F >= 1 || c5C2T >= 1)  // 이어진, 닫힌 4
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump4;
                             }
-                            if (c4C1T == 1)  // 띄어진, 닫힌 4
+                            if (c4C1T >= 1)  // 띄어진, 닫힌 4
                             {
                                 w_board[j, i] += (int)Weight.ClosedJump4;
                             }
-                            if (c3C1T == 1)  // 띄어진, 닫힌 3
+                            if (c3C1T >= 1)  // 띄어진, 닫힌 3
                             {
                                 w_board[j, i] += (int)Weight.ClosedJump3;
                             }
-                            if (c3C1F == 1)  // 이어진, 닫힌 3
+                            if (c3C1F >= 1)  // 이어진, 닫힌 3
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump3;
                             }
@@ -1141,24 +1232,47 @@ namespace OmokProgram
                             // 게임 종료
                             if (c5 >= 1)  // 5목  // 11, 3확인
                             {
-                                w_board[j, i] = (int)Weight.Gameover;
+                                w_board[j, i] += (int)Weight.Gameover;
                                 gameover = true;
                                 break;
                             }
                             // 필승 카드
                             if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
                             {
-                                w_board[j, i] = (int)Weight.Open4;
+                                w_board[j, i] += (int)Weight.Open4;
+                                c4C0F = 0;
                             }
                             else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린 3
                             {
-                                w_board[j, i] = (int)Weight.Closed4Open3;
+                                w_board[j, i] += (int)Weight.Closed4Open3;
+                                c4C1T = 0;
+                                c4C1F = 0;
+                                c3C0F = 0;
+                            }
+                            else if (c3C0T >= 1 && c3C0F >= 1)  // 하나는 띄어진, 열린 33
+                            {
+                                w_board[j, i] += (int)Weight.OpenJump33;
+                                c3C0T = 0;
+                                c3C0F = 0;
                             }
                             // 가중치 합 필요
                             if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
                                 (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)) // 막을 수 있는 43
                             {
                                 w_board[j, i] += (int)Weight.NoVictory43;
+                                if (c4C1T + c4C1F >= 1 && c3C0T >= 1)
+                                {
+                                    c4C1T = 0;
+                                    c4C1F = 0;
+                                    c3C0T = 0;
+                                }
+                                else if (c4C1T + c4C1F >= 1 && c3C1F + c3C1T >= 1)
+                                {
+                                    c4C1T = 0;
+                                    c4C1F = 0;
+                                    c3C1F = 0;
+                                    c3C1T = 0;
+                                }
                             }
                             if (c4C0T == 1)  // 한 칸 띄어진 열린 4
                             {
@@ -1167,40 +1281,46 @@ namespace OmokProgram
                             if (c3C0F + c3C0T == 1 && c2C0F + c2C0T >= 1)  // 열린 32
                             {
                                 w_board[j, i] += (int)Weight.Open32;
+                                c3C0F = 0;
+                                c3C0T = 0;
+                                c2C0F = 0;
+                                c2C0T = 0;
                             }
                             if (c2C0T + c2C0F >= 3)  // 열린 222
                             {
                                 w_board[j, i] += (int)Weight.Open222;
+                                c2C0T = 0;
+                                c2C0F = 0;
                             }
-                            if (c3C0F == 1)  // 이어진, 열린 3
+                            if (c3C0F >= 1)  // 이어진, 열린 3
                             {
                                 w_board[j, i] += (int)Weight.OpenNojump3;
                             }
-                            if (c3C0T == 1)  // 한 칸 띄어진, 열린 3
+                            if (c3C0T >= 1)  // 한 칸 띄어진, 열린 3
                             {
                                 w_board[j, i] += (int)Weight.OpenJump3;
                             }
-                            if (c4C1F == 1)  // 이어진, 닫힌 4
+                            if (c4C1F >= 1)  // 이어진, 닫힌 4
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump4;
                             }
-                            if (c4C1T == 1)  // 띄어진, 닫힌 4
+                            if (c4C1T >= 1)  // 띄어진, 닫힌 4
                             {
                                 w_board[j, i] += (int)Weight.ClosedJump4;
                             }
-                            if (c3C1T == 1)  // 띄어진, 닫힌 3
+                            if (c3C1T >= 1)  // 띄어진, 닫힌 3
                             {
                                 w_board[j, i] += (int)Weight.ClosedJump3;
                             }
-                            if (c3C1F == 1)  // 이어진, 닫힌 3
+                            if (c3C1F >= 1)  // 이어진, 닫힌 3
                             {
                                 w_board[j, i] += (int)Weight.ClosedNojump3;
                             }
-                            if (c2C0F == 1)  // 이어진, 열린 2
+                            if (c2C0F >= 1)  // 이어진, 열린 2
                             {
                                 w_board[j, i] += (int)Weight.OpenNoJump2;
                             }
-                            if (c2C0T == 1)  // 떨어진, 열린 2
+                            if (c2C0T >= 1)  // 떨어진, 열린 2
                             {
                                 w_board[j, i] += (int)Weight.OpenJump2;
                             }
@@ -1368,100 +1488,6 @@ namespace OmokProgram
                 return result;
             }
         }
-
-
-        public int[] miniMaxAI(STONE[,] board, STONE AIColor, int stoneCnt)
-        {
-            if (stoneCnt == 0)  // 첫 수는 중앙
-            {
-                Thread.Sleep(1000);
-                return new int[2] { 7, 7 };
-            }
-
-            this.board = board;
-            int[] result = new int[2] { 0, 0 };
-            int maxWeight = -(int)Weight.Gameover;
-            int[,] w_board = addWeight(AIColor);
-
-
-            if ((stoneCnt / 2) % 4 == 0)
-            {
-                Console.WriteLine("if Stone Cnt !!!!!!!!!!!!!{0}", stoneCnt);
-                for (int j = 0; j < lineCnt; j++)
-                {
-                    for (int i = 0; i < lineCnt; i++)
-                    {
-                        if (w_board[j, i] > maxWeight)
-                        {
-                            maxWeight = w_board[j, i];
-                            result[0] = j;
-                            result[1] = i;
-                        }
-                    }
-                }
-            }
-            else if ((stoneCnt / 2) % 4 == 1)
-            {
-                Console.WriteLine("else if1 Stone Cnt !!!!!!!!!!!!!{0}", stoneCnt);
-                for (int j = 0; j < lineCnt; j++)
-                {
-                    for (int i = lineCnt - 1; i >= 0; i--)
-                    {
-                        if (w_board[j, i] > maxWeight)
-                        {
-                            maxWeight = w_board[j, i];
-                            result[0] = j;
-                            result[1] = i;
-                        }
-                    }
-                }
-            }
-            else if ((stoneCnt / 2) % 4 == 2)
-            {
-                Console.WriteLine("else if2 Stone Cnt !!!!!!!!!!!!!{0}", stoneCnt);
-                for (int j = lineCnt - 1; j >= 0 ; j--)
-                {
-                    for (int i = 0; i < lineCnt; i++)
-                    {
-                        if (w_board[j, i] > maxWeight)
-                        {
-                            maxWeight = w_board[j, i];
-                            result[0] = j;
-                            result[1] = i;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("else Stone Cnt !!!!!!!!!!!!!{0}", stoneCnt);
-                for (int j = lineCnt - 1; j >= 0; j--)
-                {
-                    for (int i = lineCnt - 1; i >= 0; i--)
-                    {
-                        if (w_board[j, i] > maxWeight)
-                        {
-                            maxWeight = w_board[j, i];
-                            result[0] = j;
-                            result[1] = i;
-                        }
-                    }
-                }
-            }
-
-
-
-            if (board[result[0], result[1]] != STONE.none)
-            {
-                Console.WriteLine("random did!");
-                return randomAI(board);
-            }
-            else
-            {
-                Thread.Sleep(1000);
-                return result;
-            }
-        }
     }
 
 
@@ -1484,7 +1510,8 @@ namespace OmokProgram
         Gameover = 50000,
         Open4 = 10000,
         Closed4Open3 = 8000,
-        Open33 = 4500,
+        OpenJump33 = 4600,
+        OpenNoJump33 = 4500,
         NoVictory43 = 800,
         OpenJump4 = 660,
         Open32 = 420,
@@ -1496,8 +1523,8 @@ namespace OmokProgram
         ClosedJump3 = 120,
         ClosedNojump3 = 60,
         OpenNoJump2 = 50,
-        OpenJump2 = 40,
-        Closed2 = 30
+        OpenJump2 = 30,  // 40 이었음
+        Closed2 = 20     // 30 이었음
     }
 }
 
