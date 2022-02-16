@@ -45,7 +45,8 @@ namespace OmokProgram
         public Graphics g;
         public Pen pen;
         public Brush wBrush, bBrush, rBrush, boardBrush;
-        public Font seqFont = new Font("맑은 고딕", 9);
+        public Font seqFont3D = new Font("맑은 고딕", 7, FontStyle.Bold);
+        public Font seqFont2D = new Font("맑은 고딕", 9, FontStyle.Bold);
         public int stoneCnt = 0;
         public List<SEQUENCE_DATA> gameSeq = new List<SEQUENCE_DATA>();
 
@@ -136,7 +137,8 @@ namespace OmokProgram
             seqStringFormat.LineAlignment = StringAlignment.Center;
             for (int i = 0; i < gameSeq.Count; i++) 
             {
-                g.DrawString((i + 1).ToString(), seqFont,
+                g.DrawString((i + 1).ToString(),
+                    i >= 99 ? seqFont3D : seqFont2D,
                     gameSeq[i].brush, gameSeq[i].rectangle, seqStringFormat);
             }
         }

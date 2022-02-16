@@ -97,7 +97,7 @@ namespace OmokProgram
                     Console.WriteLine("my turn");
                     //if (pnBoard.stoneCnt == 0) pnBoard.axis = new int[2] { 7, 7 }; // 선공이면 중앙에 두기
                     //else pnBoard.axis = algorithm.fastAI(pnBoard.board, pnBoard.stoneCnt);
-                    pnBoard.axis = algorithm.miniMaxAI(pnBoard.board, myColor, pnBoard.stoneCnt);
+                    pnBoard.axis = algorithm.ruleBasedAI(pnBoard.board, myColor, pnBoard.stoneCnt);
                     Console.WriteLine("x: {0}, y: {1} 결정", pnBoard.axis[0], pnBoard.axis[1]);
 
                     protocol.command = (byte)3;
@@ -158,11 +158,13 @@ namespace OmokProgram
                 else if (buffer[0] == 4) // end
                 {
                     playing = false;
-                    if (buffer[1] == (byte)1) winner = myColor; // 0이면 진 것. winner==STONE.none
+                    if (buffer[1] == (byte)1) winner = myColor;
+                    else if (buffer[1] == (byte)0) winner = myColor == STONE.black ? STONE.white : STONE.black;
+                    if (buffer[2] == (byte)2) winner = STONE.none;
                 }
             }
 
-            Console.WriteLine("play finished!");
+            Console.WriteLine("play finished! Reason: {0}", buffer[2]);
 
             showFinishScreen();
             if (buffer[2] != (byte)0 && buffer[2] != (byte)1) showFinishReason();
@@ -197,8 +199,9 @@ namespace OmokProgram
                 pnBoard.g.DrawImage(bmp, r);
                 pnBoard.board[pnBoard.axis[0], pnBoard.axis[1]] = STONE.black;
 
-                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(), pnBoard.seqFont,
-                           pnBoard.wBrush, r, seqStringFormat);
+                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(),
+                    pnBoard.stoneCnt >= 100 ? pnBoard.seqFont3D : pnBoard.seqFont2D,
+                    pnBoard.wBrush, r, seqStringFormat);
                 pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, pnBoard.wBrush));
             }
             else
@@ -207,8 +210,9 @@ namespace OmokProgram
                 pnBoard.g.DrawImage(bmp, r);
                 pnBoard.board[pnBoard.axis[0], pnBoard.axis[1]] = STONE.white;
 
-                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(), pnBoard.seqFont,
-                           pnBoard.bBrush, r, seqStringFormat);
+                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(),
+                    pnBoard.stoneCnt >= 100 ? pnBoard.seqFont3D : pnBoard.seqFont2D,
+                    pnBoard.bBrush, r, seqStringFormat);
                 pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, pnBoard.bBrush));
             }
         }
@@ -299,7 +303,9 @@ namespace OmokProgram
                 {
                     lbTurn.Visible = false;
                     btnReplay.Visible = true;
-                    lbResult.Text = winner == myColor ? "WIN" : "LOSE";
+                    if (winner == myColor) lbResult.Text = "WIN";
+                    else if (winner == STONE.none) lbResult.Text = "DRAW";
+                    else lbResult.Text = "LOSE";
                     lbResult.Visible = true;
                     pnBoard.drawBoard();
                     pnBoard.drawStone();
@@ -309,7 +315,9 @@ namespace OmokProgram
             {
                 lbTurn.Visible = false;
                 btnReplay.Visible = true;
-                lbResult.Text = winner == myColor ? "WIN" : "LOSE";
+                if (winner == myColor) lbResult.Text = "WIN";
+                else if (winner == STONE.none) lbResult.Text = "DRAW";
+                else lbResult.Text = "LOSE";
                 lbResult.Visible = true;
                 pnBoard.drawBoard();
                 pnBoard.drawStone();

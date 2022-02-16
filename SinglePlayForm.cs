@@ -137,7 +137,7 @@ namespace OmokProgram
                     changelbTurnText("Com's Turn");
                     try  // 기권에 대한 예외처리(thread.Interrupt())
                     {
-                        pnBoard.axis = algorithm.miniMaxAI(pnBoard.board, AIColor, pnBoard.stoneCnt);
+                        pnBoard.axis = algorithm.ruleBasedAI(pnBoard.board, AIColor, pnBoard.stoneCnt);
                     }
                     catch (ThreadInterruptedException ex)
                     {
@@ -247,8 +247,9 @@ namespace OmokProgram
                 pnBoard.board[pnBoard.axis[0], pnBoard.axis[1]] = STONE.black;
 
                 Brush b = Brushes.White;
-                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(), pnBoard.seqFont,
-                                    b, r, seqStringFormat);
+                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(), 
+                    pnBoard.stoneCnt >= 100 ? pnBoard.seqFont3D : pnBoard.seqFont2D,
+                    b, r, seqStringFormat);
                 pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, b));
             }
             else
@@ -258,8 +259,9 @@ namespace OmokProgram
                 pnBoard.board[pnBoard.axis[0], pnBoard.axis[1]] = STONE.white;
 
                 Brush b = Brushes.Black;
-                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(), pnBoard.seqFont,
-                                    b, r, seqStringFormat);
+                pnBoard.g.DrawString((++pnBoard.stoneCnt).ToString(),
+                    pnBoard.stoneCnt >= 100 ? pnBoard.seqFont3D : pnBoard.seqFont2D,
+                    b, r, seqStringFormat);
                 pnBoard.gameSeq.Add(new SEQUENCE_DATA(r, b));
             }
         }

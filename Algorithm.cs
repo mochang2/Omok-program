@@ -132,7 +132,6 @@ namespace OmokProgram
                     if (x != 0 && y != 0 && x != lineCnt - 1 && y != lineCnt - 1) // 가장자리에 두지 않을 때만
                     {
                         List<Point> axisList = checkOpenDir1(x, y);
-                        //Console.WriteLine("가로 방향 axisList count {0}", axisList.Count);
                         if (axisList.Count == 3) // 33 check
                         {
                             if (checkOpenDir2(x, y).Count == 3) return STONE.white; // 흑이 금수를 둠
@@ -147,7 +146,6 @@ namespace OmokProgram
                         }
 
                         axisList = checkOpenDir2(x, y);
-                        //Console.WriteLine("세로 방향 axisList count {0}", axisList.Count);
                         if (axisList.Count == 3) // 33 check
                         {
                             if (checkOpenDir1(x, y).Count == 3) return STONE.white; // 흑이 금수를 둠
@@ -162,7 +160,6 @@ namespace OmokProgram
                         }
 
                         axisList = checkOpenDir3(x, y);
-                        //Console.WriteLine("대각1 방향 axisList count {0}", axisList.Count);
                         if (axisList.Count == 3) // 33 check
                         {
                             if (checkOpenDir1(x, y).Count == 3) return STONE.white; // 흑이 금수를 둠
@@ -177,7 +174,6 @@ namespace OmokProgram
                         }
 
                         axisList = checkOpenDir4(x, y);
-                        //Console.WriteLine("대각2 방향 axisList count {0}", axisList.Count);
                         if (axisList.Count == 3) // 33 check
                         {
                             if (checkOpenDir1(x, y).Count == 3) return STONE.white; // 흑이 금수를 둠
@@ -706,10 +702,20 @@ namespace OmokProgram
                             int c2C1T = 0;
 
                             List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
-                            li.Add(checkDir1(j, i, stone));
-                            li.Add(checkDir2(j, i, stone));
-                            li.Add(checkDir3(j, i, stone));
-                            li.Add(checkDir4(j, i, stone));
+                            board[j, i] = stone;  // 연결된 5 뒤에 한 칸 띄고 같은 색이 또 있는 edge case를 제거하기 위해
+                            if (checkOmok(board, j, i, stone) == stone)
+                            {
+                                li.Add(new WeightInfo(5, 0, false));
+                            }
+                            else
+                            {
+                                li.Add(checkDir1(j, i, stone));
+                                li.Add(checkDir2(j, i, stone));
+                                li.Add(checkDir3(j, i, stone));
+                                li.Add(checkDir4(j, i, stone));
+                            }
+                            board[j, i] = STONE.none;
+
                             foreach (WeightInfo wi in li)
                             {
                                 if (wi.connectCnt == 5 && wi.jump == false) c5++;
@@ -737,11 +743,11 @@ namespace OmokProgram
                             // 필승 카드
                             if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Open4;
                             }
                             else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린 3
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Closed4Open3;
                             }
                             // 가중치 합 필요
                             if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
@@ -827,10 +833,19 @@ namespace OmokProgram
 
 
                             List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
-                            li.Add(checkDir1(j, i, stone));
-                            li.Add(checkDir2(j, i, stone));
-                            li.Add(checkDir3(j, i, stone));
-                            li.Add(checkDir4(j, i, stone));
+                            board[j, i] = stone;  // 연결된 5 뒤에 한 칸 띄고 같은 색이 또 있는 edge case를 제거하기 위해
+                            if (checkOmok(board, j, i, stone) == stone)
+                            {
+                                li.Add(new WeightInfo(5, 0, false));
+                            }
+                            else
+                            {
+                                li.Add(checkDir1(j, i, stone));
+                                li.Add(checkDir2(j, i, stone));
+                                li.Add(checkDir3(j, i, stone));
+                                li.Add(checkDir4(j, i, stone));
+                            }
+                            board[j, i] = STONE.none;
 
                             foreach (WeightInfo wi in li)
                             {
@@ -862,15 +877,15 @@ namespace OmokProgram
                             // 필승카드
                             if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Open4;
                             }
                             else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린3
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Closed4Open3;
                             }
                             else if (c3C0F + c3C0T >= 2)  // 열린 3이 2 개 이상
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Open33;
                             }
                             // 가중치 합 필요
                             if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
@@ -956,10 +971,19 @@ namespace OmokProgram
 
 
                             List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
-                            li.Add(checkDir1(j, i, stone));
-                            li.Add(checkDir2(j, i, stone));
-                            li.Add(checkDir3(j, i, stone));
-                            li.Add(checkDir4(j, i, stone));
+                            board[j, i] = stone;  // 연결된 5 뒤에 한 칸 띄고 같은 색이 또 있는 edge case를 제거하기 위해
+                            if (checkOmok(board, j, i, stone) == stone)
+                            {
+                                li.Add(new WeightInfo(5, 0, false));
+                            }
+                            else
+                            {
+                                li.Add(checkDir1(j, i, stone));
+                                li.Add(checkDir2(j, i, stone));
+                                li.Add(checkDir3(j, i, stone));
+                                li.Add(checkDir4(j, i, stone));
+                            }
+                            board[j, i] = STONE.none;
 
                             foreach (WeightInfo wi in li)
                             {
@@ -991,15 +1015,15 @@ namespace OmokProgram
                             // 필승 카드
                             if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Open4;
                             }
                             else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린3
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Closed4Open3;
                             }
                             else if (c3C0F + c3C0T >= 2)  // 열린 3이 2 개 이상
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Open33;
                             }
                             // 가중치 합 필요
                             if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
@@ -1084,10 +1108,20 @@ namespace OmokProgram
                             int c2C1T = 0;
 
                             List<WeightInfo> li = new List<WeightInfo>(); // 4방향 확인
-                            li.Add(checkDir1(j, i, stone));
-                            li.Add(checkDir2(j, i, stone));
-                            li.Add(checkDir3(j, i, stone));
-                            li.Add(checkDir4(j, i, stone));
+                            board[j, i] = stone;  // 연결된 5 뒤에 한 칸 띄고 같은 색이 또 있는 edge case를 제거하기 위해
+                            if (checkOmok(board, j, i, stone) == stone)
+                            {
+                                li.Add(new WeightInfo(5, 0, false));
+                            }
+                            else
+                            {
+                                li.Add(checkDir1(j, i, stone));
+                                li.Add(checkDir2(j, i, stone));
+                                li.Add(checkDir3(j, i, stone));
+                                li.Add(checkDir4(j, i, stone));
+                            }
+                            board[j, i] = STONE.none;
+
                             foreach (WeightInfo wi in li)
                             {
                                 if (wi.connectCnt == 5 && wi.jump == false) c5++;
@@ -1115,11 +1149,11 @@ namespace OmokProgram
                             // 필승 카드
                             if (c4C0F >= 1)  // 이어진, 열린 4가 포함됨
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Open4;
                             }
                             else if (c4C1T + c4C1F >= 1 && c3C0F >= 1)  // 한쪽만 닫힌4 + 이어진, 열린 3
                             {
-                                w_board[j, i] = (int)Weight.NextOver;
+                                w_board[j, i] = (int)Weight.Closed4Open3;
                             }
                             // 가중치 합 필요
                             if ((c4C1T + c4C1F >= 1 && c3C0T >= 1) ||
@@ -1249,8 +1283,48 @@ namespace OmokProgram
             return new int[2] { 0, 0 };
         }
 
-        public int[] miniMaxAI(STONE[,] board, STONE AIColor, int stoneCnt)
+        public int[] ruleBasedAI(STONE[,] board, STONE AIColor, int stoneCnt)
         { 
+            if (stoneCnt == 0)  // 첫 수는 중앙
+            {
+                Thread.Sleep(1000);
+                return new int[2] { 7, 7 };
+            }
+
+            this.board = board;
+            int[] result = new int[2] { 0, 0 };
+            int maxWeight = -(int)Weight.Gameover;
+            int[,] w_board = addWeight(AIColor);
+
+            for (int j = 0; j < lineCnt; j++)
+            {
+                for (int i = 0; i < lineCnt; i++)
+                {
+                    if (w_board[j, i] > maxWeight)
+                    {
+                        maxWeight = w_board[j, i];
+                        result[0] = j;
+                        result[1] = i;
+                    }
+                }
+            }
+
+
+            if (board[result[0], result[1]] != STONE.none)
+            {
+                Console.WriteLine("random did!");
+                return randomAI(board);
+            }
+            else
+            {
+                Thread.Sleep(1000);
+                return result;
+            }
+        }
+
+
+        public int[] miniMaxAI(STONE[,] board, STONE AIColor, int stoneCnt)
+        {
             if (stoneCnt == 0)  // 첫 수는 중앙
             {
                 Thread.Sleep(1000);
@@ -1306,8 +1380,10 @@ namespace OmokProgram
 
     enum Weight
     {
-        Gameover = 150000,
-        NextOver = 30000,
+        Gameover = 50000,
+        Open4 = 10000,
+        Closed4Open3 = 8000,
+        Open33 = 4500,
         NoVictory43 = 800,
         OpenJump4 = 660,
         Open32 = 420,
