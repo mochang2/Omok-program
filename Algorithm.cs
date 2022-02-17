@@ -1484,7 +1484,7 @@ namespace OmokProgram
             }
             else
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
                 return result;
             }
         }
